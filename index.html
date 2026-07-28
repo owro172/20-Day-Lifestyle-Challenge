@@ -205,10 +205,44 @@
   .tl-item{margin-bottom:12px; position:relative;}
   .tl-item:last-child{margin-bottom:0;}
   .tl-item::before{content:""; position:absolute; left:-20px; top:4px; width:8px; height:8px; border-radius:50%; background:var(--rest2);}
-  .tl-item.hi::before{background:linear-gradient(135deg,var(--lift1),var(--lift2)); box-shadow:0 0 0 3px rgba(255,59,92,0.18);}
   .tl-item .t{font-weight:800; font-size:11.5px; font-variant-numeric:tabular-nums; letter-spacing:0.01em;}
   .tl-item .d{color:var(--muted); font-size:11.5px; font-weight:600; margin-top:2px; line-height:1.45;}
   .tl-item .d b{color:var(--ink);}
+
+  /* The day's session: a hollow ring in the day-type color. Marks what kind of
+     block it is, which is separate from where the clock currently is. */
+  .tl-item.hi::before{
+    box-sizing:border-box;
+    background:var(--bg); border:2.5px solid var(--daycol, var(--lift1));
+    width:11px; height:11px; left:-21.5px; top:2.5px;
+  }
+
+  /* Up next — the clock is in a gap before this block starts. */
+  .tl-item.next::before{
+    box-sizing:border-box; border:none;
+    background:var(--power); box-shadow:0 0 0 3px rgba(255,214,10,0.16);
+    width:8px; height:8px; left:-20px; top:4px;
+  }
+
+  /* Happening now. Wins over both of the above, so it is listed last. */
+  .tl-item.now::before{
+    box-sizing:border-box; border:none;
+    background:linear-gradient(135deg,var(--lift1),var(--lift2));
+    width:10px; height:10px; left:-21px; top:3px;
+    animation:nowPulse 2.6s ease-in-out infinite;
+  }
+  .tl-item.now .t{color:var(--lift1);}
+  @keyframes nowPulse{
+    0%,100%{box-shadow:0 0 0 3px rgba(255,59,92,0.24);}
+    50%{box-shadow:0 0 0 8px rgba(255,59,92,0.05);}
+  }
+  .tl-chip{
+    display:inline-block; margin-left:7px; vertical-align:middle;
+    font-size:8.5px; font-weight:900; letter-spacing:0.08em; text-transform:uppercase;
+    padding:2px 7px; border-radius:999px;
+  }
+  .tl-chip.now{background:linear-gradient(135deg,var(--lift1),var(--lift2)); color:#fff;}
+  .tl-chip.next{background:linear-gradient(135deg,var(--power),#FF9F0A); color:#1C1C1E;}
 
   /* ============ stats ============ */
   .stat-strip{display:grid; grid-template-columns:repeat(3,1fr); gap:10px; margin-bottom:14px;}
@@ -1009,31 +1043,73 @@
     });
   }
 
-  /* ---------- schedule ---------- */
+  /* ---------- schedule ----------
+     s and e are minutes from midnight, used to light up whichever block the
+     clock is currently in. Blocks that are genuinely "whenever" carry no range
+     and never light up. */
   function scheduleFor(n){
     var info = dayType(n), p = cyclePos(n), out = [];
-    out.push({t:"6:30 – 6:45 AM", d:"Up, water, 10–15 min outside in natural light. Quick rinse, moisturizer, sunscreen."});
-    if (p === 6) out.push({t:"6:45 – 7:15 AM", d:"Breakfast — go bigger on carbs today, this is the day you need the most fuel."});
-    else if (info.type === "lift") out.push({t:"6:45 – 7:15 AM", d:"Breakfast, full and protein-forward — eggs or protein oats."});
-    else out.push({t:"6:45 – 7:15 AM", d:"Breakfast, protein-forward. Lighter is fine on a cardio day."});
+    out.push({t:"6:30 – 6:45 AM", s:390, e:405, d:"Up, water, 10–15 min outside in natural light. Quick rinse, moisturizer, sunscreen."});
+    if (p === 6) out.push({t:"6:45 – 7:15 AM", s:405, e:435, d:"Breakfast — go bigger on carbs today, this is the day you need the most fuel."});
+    else if (info.type === "lift") out.push({t:"6:45 – 7:15 AM", s:405, e:435, d:"Breakfast, full and protein-forward — eggs or protein oats."});
+    else out.push({t:"6:45 – 7:15 AM", s:405, e:435, d:"Breakfast, protein-forward. Lighter is fine on a cardio day."});
 
+    var throughStart;
     if (info.type === "lift"){
-      out.push({t:"10:00 – 11:00 AM", d:"<b>" + info.title + "</b> — see the Workout tab for the full session.", hi:true});
-      out.push({t:"After training", d:"Warm shower and a real face cleanse. <b>No cold shower today</b> — it would blunt the muscle-building signal. Protein and carbs within the hour."});
+      out.push({t:"10:00 – 11:00 AM", s:600, e:660, hi:true, d:"<b>" + info.title + "</b> — see the Workout tab for the full session."});
+      out.push({t:"After training", s:660, e:720, d:"Warm shower and a real face cleanse. <b>No cold shower today</b> — it would blunt the muscle-building signal. Protein and carbs within the hour."});
+      throughStart = 720;
     } else if (info.type === "cardio"){
       var what = p === 2 ? "Easy bike, 20+ km at recovery pace"
                : p === 3 ? "Trail run 5+ km, then light upper-body work"
                : "Your longest ride or run of the week";
-      out.push({t:"7:30 – 9:00 AM", d:"<b>" + what + ".</b> Routes are on the Workout tab.", hi:true});
-      out.push({t:"After training", d:(coldShowerDay(n) ? "Cold shower while still warm from the session, plus a real face cleanse." : "Normal warm shower and face cleanse.") + " Protein and carbs within the hour."});
+      out.push({t:"7:30 – 9:00 AM", s:450, e:540, hi:true, d:"<b>" + what + ".</b> Routes are on the Workout tab."});
+      out.push({t:"After training", s:540, e:600, d:(coldShowerDay(n) ? "Cold shower while still warm from the session, plus a real face cleanse." : "Normal warm shower and face cleanse.") + " Protein and carbs within the hour."});
+      throughStart = 600;
     } else {
-      out.push({t:"Whenever it fits", d:"<b>No formal session.</b> An easy walk or stretch — steps still add up through the day.", hi:true});
+      out.push({t:"Whenever it fits", hi:true, d:"<b>No formal session.</b> An easy walk or stretch — steps still add up through the day."});
       if (coldShowerDay(n)) out.push({t:"Any time", d:"Cold shower today. It doesn't need to follow a workout, since there isn't one."});
       if (p === 7) out.push({t:"Sometime today", d:"Look back at the week and prep or shop food for the one ahead."});
+      throughStart = 435;
     }
-    out.push({t:"Through the day", d:"Protein at every meal. Steps accumulate through errands and normal movement."});
-    out.push({t:"Evening", d:"Dinner → read 30–60 min → PM face routine → journal → screens off → <b>9:30 PM lights out</b>."});
+    out.push({t:"Through the day", s:throughStart, e:1080, d:"Protein at every meal. Steps accumulate through errands and normal movement."});
+    out.push({t:"Evening", s:1080, e:1290, d:"Dinner → read 30–60 min → PM face routine → journal → screens off → <b>9:30 PM lights out</b>."});
     return out;
+  }
+
+  /* Marks the block the clock is inside as "now", or the soonest upcoming one
+     as "next" when the clock falls in a gap between blocks. */
+  function applyNow(){
+    var card = document.getElementById("scheduleCard");
+    if (!card) return;
+    var items = card.querySelectorAll(".tl-item");
+    if (!items.length) return;
+
+    var d = new Date(), mins = d.getHours() * 60 + d.getMinutes();
+    var nowIdx = -1, nextIdx = -1, soonest = Infinity;
+
+    for (var i = 0; i < items.length; i++){
+      items[i].classList.remove("now", "next");
+      var chip = items[i].querySelector(".tl-chip");
+      if (chip) chip.parentNode.removeChild(chip);
+      var raw = items[i].getAttribute("data-s");
+      if (raw === null) continue;
+      var s = parseInt(raw, 10), e = parseInt(items[i].getAttribute("data-e"), 10);
+      if (mins >= s && mins < e) nowIdx = i;
+      else if (s > mins && s < soonest){ soonest = s; nextIdx = i; }
+    }
+
+    var target = nowIdx > -1 ? nowIdx : nextIdx;
+    if (target < 0) return; // before wake or after lights out
+    var kind = nowIdx > -1 ? "now" : "next";
+    items[target].classList.add(kind);
+    var label = items[target].querySelector(".t");
+    if (label){
+      var span = document.createElement("span");
+      span.className = "tl-chip " + kind;
+      span.textContent = kind === "now" ? "Now" : "Next";
+      label.appendChild(span);
+    }
   }
 
   /* ---------- top ---------- */
@@ -1211,10 +1287,15 @@
       });
     });
 
-    sched.innerHTML = '<h3>Today\'s Shape <span class="tiny">6:30 AM to 9:30 PM</span></h3><div class="timeline">' +
+    var daycol = info.type === "lift" ? "var(--lift1)" : info.type === "cardio" ? "var(--cardio1)" : "var(--rest2)";
+    sched.innerHTML = '<h3>Today\'s Shape <span class="tiny">6:30 AM to 9:30 PM</span></h3>' +
+      '<div class="timeline" style="--daycol:' + daycol + ';">' +
       scheduleFor(selectedDay).map(function(x){
-        return '<div class="tl-item' + (x.hi ? " hi" : "") + '"><div class="t">' + x.t + '</div><div class="d">' + x.d + '</div></div>';
+        return '<div class="tl-item' + (x.hi ? " hi" : "") + '"' +
+          (x.s != null ? ' data-s="' + x.s + '" data-e="' + x.e + '"' : '') +
+          '><div class="t">' + x.t + '</div><div class="d">' + x.d + '</div></div>';
       }).join("") + '</div>';
+    applyNow();
 
     if (info.type === "lift"){
       var isA = cyclePos(selectedDay) === 1;
@@ -1508,6 +1589,9 @@
 
   renderAll();
   switchTab("today");
+
+  // Keep the "now" marker tracking the clock without needing a reload.
+  setInterval(applyNow, 60000);
 })();
 </script>
 </body>
