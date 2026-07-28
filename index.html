@@ -1,5 +1,17 @@
-<title>20-Day Challenge</title>
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>20-Day Challenge</title>
+<meta name="description" content="Daily checklist, workout plan, progress tracking and the full guide for a 20-day lifestyle challenge.">
+<meta name="theme-color" content="#F2F2F7" media="(prefers-color-scheme: light)">
+<meta name="theme-color" content="#161618" media="(prefers-color-scheme: dark)">
+<meta name="mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="default">
+<meta name="apple-mobile-web-app-title" content="20-Day">
+<link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='%23FF3B5C' stroke-width='2.4' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpath d='M19.36 7.75A8.5 8.5 0 1 1 14.2 3.79'/%3E%3Cpath d='M8.5 12.3l2.5 2.5 5-5.6'/%3E%3C/svg%3E">
 <style>
   :root{
     --bg:#F2F2F7;
@@ -56,6 +68,15 @@
   :focus-visible{outline:2px solid var(--rest2); outline-offset:2px; border-radius:8px;}
   ::selection{background:var(--lift1); color:#fff;}
   h1,h2,h3,h4{text-wrap:balance;}
+
+  /* ============ icon system ============ */
+  .sprite{position:absolute; width:0; height:0; overflow:hidden;}
+  .ico{
+    width:22px; height:22px; display:block; flex:none;
+    fill:none; stroke:currentColor; stroke-width:1.9;
+    stroke-linecap:round; stroke-linejoin:round;
+  }
+  .ico .solid{fill:currentColor; stroke:none;}
 
   /* ============ shell ============ */
   .app{
@@ -114,6 +135,7 @@
     border:2px solid transparent; color:var(--ink);
   }
   .daychip .num{font-size:13px; font-weight:800; font-variant-numeric:tabular-nums; line-height:1;}
+  .daychip .star{margin:0 auto; width:14px; height:14px; stroke-width:2.2;}
   .daychip .dot{width:5px; height:5px; border-radius:50%; margin:4px auto 0; background:transparent;}
   .daychip.today .dot{background:var(--lift1);}
   .daychip.complete{background:linear-gradient(135deg,rgba(48,209,88,0.16),rgba(0,199,190,0.16));}
@@ -151,10 +173,13 @@
     border:2px solid var(--hair); background:var(--bg);
     margin:0; position:relative;
   }
-  .check-row input[type="checkbox"]:checked{background:linear-gradient(135deg,var(--cardio1),var(--cardio2)); border-color:transparent;}
-  .check-row input[type="checkbox"]:checked::after{
-    content:"✓"; color:#fff; font-size:15px; font-weight:900;
-    position:absolute; inset:0; display:flex; align-items:center; justify-content:center;
+  .check-row input[type="checkbox"]:checked{
+    border-color:transparent;
+    background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='white' stroke-width='3.4' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpath d='M5 12.6l4.6 4.6L19 7'/%3E%3C/svg%3E"),
+      linear-gradient(135deg,var(--cardio1),var(--cardio2));
+    background-size:15px 15px, 100% 100%;
+    background-position:center, center;
+    background-repeat:no-repeat, no-repeat;
   }
   .check-row .label{flex:1; min-width:0;}
   .check-row .title{font-weight:800; font-size:14px; line-height:1.35;}
@@ -218,16 +243,22 @@
   .photo-thumb{
     width:60px; height:60px; border-radius:14px; background:var(--bg); flex:none; overflow:hidden;
     display:flex; align-items:center; justify-content:center;
-    border:1.5px dashed var(--hair); color:var(--muted); font-size:10px; font-weight:700; text-align:center;
+    border:1.5px dashed var(--hair); color:var(--muted);
   }
   .photo-thumb img{width:100%; height:100%; object-fit:cover;}
+  .photo-thumb .ico{width:20px; height:20px; stroke-width:1.7;}
   .ms-block{padding-bottom:16px; margin-bottom:16px; border-bottom:1px solid var(--hair);}
   .ms-block:last-child{padding-bottom:0; margin-bottom:0; border-bottom:none;}
   .ms-head{display:flex; align-items:center; justify-content:space-between; margin-bottom:9px;}
   .ms-head .d{font-weight:800; font-size:12.5px;}
   .ms-head .when{color:var(--muted); font-size:11px; font-weight:700;}
 
-  .btn{border:none; border-radius:12px; padding:9px 14px; font-size:12.5px; font-weight:800; background:var(--hair); color:var(--ink);}
+  .btn{
+    border:none; border-radius:12px; padding:9px 14px; font-size:12.5px; font-weight:800;
+    background:var(--hair); color:var(--ink);
+    display:inline-flex; align-items:center; gap:7px;
+  }
+  .btn .ico{width:15px; height:15px; stroke-width:2.1;}
   .btn.primary{background:linear-gradient(135deg,var(--lift1),var(--lift2)); color:#fff;}
   .btn.ghost{background:transparent; border:1.5px solid var(--hair); color:var(--muted);}
   .btn.small{padding:7px 12px; font-size:11px;}
@@ -248,7 +279,8 @@
     background:linear-gradient(135deg,#1C1C1E,#3A3A3C); color:#fff;
     border-radius:20px; padding:16px 18px 14px; margin-bottom:14px; box-shadow:0 6px 20px rgba(0,0,0,0.2);
   }
-  .weight-guide h3{color:#fff; font-size:15px; margin:0 0 8px; font-weight:800;}
+  .weight-guide h3{color:#fff; font-size:15px; margin:0 0 8px; font-weight:800; display:flex; align-items:center; gap:8px;}
+  .weight-guide h3 .ico{width:17px; height:17px; color:var(--power);}
   .weight-guide p{margin:0 0 4px; font-size:12.5px; line-height:1.5; color:#D1D1D6; font-weight:600;}
   .pill-row{display:flex; flex-wrap:wrap; gap:7px; margin-top:10px;}
   .pill-row .pill{background:rgba(255,255,255,0.13); border-radius:999px; padding:5px 11px; font-size:11.5px; font-weight:700;}
@@ -259,14 +291,20 @@
   .step .num{flex:none; width:27px; height:27px; border-radius:50%; background:var(--hair); color:var(--muted); display:flex; align-items:center; justify-content:center; font-weight:800; font-size:12px;}
   .step.power .num{background:linear-gradient(135deg,var(--power),#FF9F0A); color:#1C1C1E;}
   .step .body{flex:1; min-width:0;}
-  .step .name{font-weight:800; font-size:13.5px;}
-  .step .name .badge{display:inline-block; margin-left:5px; font-size:9px; font-weight:800; color:#1C1C1E; background:linear-gradient(135deg,var(--power),#FF9F0A); padding:2px 7px; border-radius:999px; vertical-align:middle;}
+  .step .name{font-weight:800; font-size:13.5px; display:flex; align-items:center; gap:6px; flex-wrap:wrap;}
+  .step .name .badge{
+    display:inline-flex; align-items:center; gap:3px; font-size:9px; font-weight:800; color:#1C1C1E;
+    background:linear-gradient(135deg,var(--power),#FF9F0A); padding:2px 7px 2px 5px; border-radius:999px; letter-spacing:0.03em;
+  }
+  .step .name .badge .ico{width:10px; height:10px; stroke-width:2.4;}
   .step .cue{color:var(--muted); font-size:11px; font-weight:600; margin-top:1px; line-height:1.35;}
   .step .sxr{flex:none; font-weight:800; font-size:11.5px; background:var(--hair); border-radius:999px; padding:6px 10px; white-space:nowrap; font-variant-numeric:tabular-nums;}
 
   .cardio-card{background:var(--bg); border-radius:16px; padding:12px 14px; margin-bottom:10px;}
-  .cardio-card h4{font-size:12px; margin:0 0 8px; font-weight:800; display:flex; align-items:center; gap:7px;}
-  .cardio-card h4 .swatch{width:9px; height:9px; border-radius:50%;}
+  .cardio-card h4{font-size:12px; margin:0 0 8px; font-weight:800; display:flex; align-items:center; gap:8px;}
+  .cardio-card h4 .ico{width:16px; height:16px;}
+  .cardio-card h4 .bike{color:var(--cardio1);}
+  .cardio-card h4 .run{color:var(--cardio2);}
   .cardio-card ul{margin:0; padding-left:0; list-style:none; font-size:11.5px; color:var(--muted); font-weight:600; line-height:1.55;}
   .cardio-card li{padding-left:14px; position:relative; margin-bottom:5px;}
   .cardio-card li:last-child{margin-bottom:0;}
@@ -275,10 +313,10 @@
 
   /* ============ guide ============ */
   details.gsec{background:var(--card); border-radius:18px; box-shadow:var(--shadow); margin-bottom:12px; overflow:hidden;}
-  details.gsec summary{list-style:none; padding:14px 16px; display:flex; align-items:center; gap:10px; font-weight:800; font-size:13.5px;}
+  details.gsec summary{list-style:none; padding:14px 16px; display:flex; align-items:center; gap:11px; font-weight:800; font-size:13.5px;}
   details.gsec summary::-webkit-details-marker{display:none;}
-  details.gsec summary .ic{font-size:16px; flex:none;}
-  details.gsec summary .chev{margin-left:auto; color:var(--muted); font-size:12px; transition:transform .16s ease;}
+  details.gsec summary > .ico{width:19px; height:19px; color:var(--rest2);}
+  details.gsec summary .chev{margin-left:auto; width:15px; height:15px; color:var(--muted); stroke-width:2.4; transition:transform .18s ease;}
   details.gsec[open] summary .chev{transform:rotate(90deg);}
   .gbody{padding:0 16px 15px; font-size:12.5px; line-height:1.6; color:var(--ink);}
   .gbody p{margin:0 0 9px;}
@@ -291,7 +329,7 @@
   .gtable tr:last-child td{border-bottom:none; font-weight:800;}
   .gtable td:last-child{text-align:right; font-variant-numeric:tabular-nums; white-space:nowrap; padding-left:10px;}
 
-  /* ============ nav: bottom bar (mobile) ============ */
+  /* ============ nav ============ */
   .nav{
     display:flex; background:var(--navbg);
     backdrop-filter:blur(20px); -webkit-backdrop-filter:blur(20px);
@@ -300,12 +338,13 @@
   }
   .nav .brand, .nav .navfoot{display:none;}
   .tab{
-    flex:1; display:flex; flex-direction:column; align-items:center; gap:2px;
+    flex:1; display:flex; flex-direction:column; align-items:center; gap:3px;
     color:var(--muted); font-size:10px; font-weight:700; background:none; border:none; padding:4px 0;
   }
   .tab.active{color:var(--lift1);}
-  .tab .ic{width:26px; height:26px; border-radius:9px; display:flex; align-items:center; justify-content:center; font-size:14px;}
+  .tab .ic{width:30px; height:26px; border-radius:9px; display:flex; align-items:center; justify-content:center;}
   .tab.active .ic{background:linear-gradient(135deg,var(--lift1),var(--lift2)); color:#fff;}
+  .tab .ico{width:19px; height:19px;}
 
   .toast{
     position:fixed; left:50%; bottom:86px; transform:translateX(-50%) translateY(10px);
@@ -315,7 +354,7 @@
   }
   .toast.show{opacity:1; transform:translateX(-50%) translateY(0);}
 
-  /* ============ tablet: roomier ============ */
+  /* ============ tablet ============ */
   @media (min-width:600px){
     .view{padding:6px 26px 34px;}
     .topbar{padding:20px 26px 8px;}
@@ -324,9 +363,8 @@
     .daychip{min-width:46px;}
   }
 
-  /* ============ laptop / desktop: sidebar + columns ============ */
+  /* ============ laptop / desktop ============ */
   @media (min-width:900px){
-    body{padding:0;}
     .app{
       max-width:1180px; margin:0 auto;
       display:grid; grid-template-columns:236px 1fr; grid-template-rows:100%;
@@ -335,18 +373,17 @@
     .nav{
       order:0; grid-column:1; flex-direction:column; align-items:stretch; gap:3px;
       border-top:none; border-right:1px solid var(--hair);
-      padding:26px 14px; background:transparent; backdrop-filter:none;
+      padding:26px 14px; background:transparent; backdrop-filter:none; -webkit-backdrop-filter:none;
       overflow-y:auto;
     }
-    .nav .brand{
-      display:block; padding:0 10px 22px;
-    }
+    .nav .brand{display:block; padding:0 10px 22px;}
     .nav .brand .mark{
-      width:40px; height:40px; border-radius:13px; margin-bottom:11px;
+      width:40px; height:40px; border-radius:13px; margin-bottom:11px; color:#fff;
       background:linear-gradient(135deg,var(--lift1),var(--lift2));
-      display:flex; align-items:center; justify-content:center; font-size:19px;
+      display:flex; align-items:center; justify-content:center;
       box-shadow:0 6px 16px rgba(255,59,92,0.3);
     }
+    .nav .brand .mark .ico{width:22px; height:22px; stroke-width:2.2;}
     .nav .brand .t{font-size:15px; font-weight:800; letter-spacing:-0.015em; line-height:1.25;}
     .nav .brand .s{font-size:11px; font-weight:700; color:var(--muted); margin-top:3px; font-variant-numeric:tabular-nums;}
     .tab{
@@ -354,7 +391,8 @@
       padding:10px 11px; border-radius:13px; font-size:13.5px; font-weight:700;
     }
     .tab.active{background:var(--card); color:var(--ink); box-shadow:var(--shadow);}
-    .tab .ic{width:28px; height:28px; font-size:15px;}
+    .tab .ic{width:30px; height:30px;}
+    .tab .ico{width:20px; height:20px;}
     .nav .navfoot{display:block; margin-top:auto; padding:16px 10px 0;}
     .nav .navfoot .lbl{font-size:10px; font-weight:800; color:var(--muted); text-transform:uppercase; letter-spacing:0.07em; margin-bottom:7px;}
     .nav .navfoot .big{font-size:12.5px; font-weight:700; color:var(--muted); line-height:1.45;}
@@ -372,27 +410,167 @@
     .stat .v{font-size:26px;}
   }
 
-  @media (min-width:1180px){
-    .app{border-radius:0;}
-  }
-
   @media (prefers-reduced-motion: reduce){
     *{transition:none !important; animation:none !important; scroll-behavior:auto !important;}
   }
 </style>
+</head>
+<body>
+
+<svg class="sprite" aria-hidden="true" focusable="false"><defs>
+
+  <symbol id="i-brand" viewBox="0 0 24 24">
+    <path d="M19.36 7.75A8.5 8.5 0 1 1 14.2 3.79"/>
+    <path d="M8.5 12.3l2.5 2.5 5-5.6"/>
+  </symbol>
+
+  <symbol id="i-today" viewBox="0 0 24 24">
+    <rect x="3.5" y="3.5" width="17" height="17" rx="5.2"/>
+    <path d="M8.3 12.4l2.6 2.6 4.8-5.4"/>
+  </symbol>
+
+  <symbol id="i-workout" viewBox="0 0 24 24">
+    <path d="M2.8 9.6v4.8"/>
+    <path d="M6.2 7.2v9.6"/>
+    <path d="M17.8 7.2v9.6"/>
+    <path d="M21.2 9.6v4.8"/>
+    <path d="M6.2 12h11.6"/>
+  </symbol>
+
+  <symbol id="i-progress" viewBox="0 0 24 24">
+    <path d="M4 3.2v15.6a1.2 1.2 0 0 0 1.2 1.2H20.6"/>
+    <path d="M7.6 16.4l4-4.6 3 2.6 4.4-6"/>
+    <circle class="solid" cx="19" cy="8.4" r="1.7"/>
+  </symbol>
+
+  <symbol id="i-guide" viewBox="0 0 24 24">
+    <path d="M12 6.6v13.2"/>
+    <path d="M12 6.6C10.4 5 8.3 4.4 4.4 4.4v13.2c3.9 0 6 .6 7.6 2.2"/>
+    <path d="M12 6.6c1.6-1.6 3.7-2.2 7.6-2.2v13.2c-3.9 0-6 .6-7.6 2.2"/>
+  </symbol>
+
+  <symbol id="i-clock" viewBox="0 0 24 24">
+    <circle cx="12" cy="12" r="8.6"/>
+    <path d="M12 7v5.2l3.4 2"/>
+  </symbol>
+
+  <symbol id="i-cycle" viewBox="0 0 24 24">
+    <path d="M4.2 12a7.8 7.8 0 0 1 13.3-5.5l2.3 2.3"/>
+    <path d="M19.8 4.4v4.4h-4.4"/>
+    <path d="M19.8 12a7.8 7.8 0 0 1-13.3 5.5l-2.3-2.3"/>
+    <path d="M4.2 19.6v-4.4h4.4"/>
+  </symbol>
+
+  <symbol id="i-food" viewBox="0 0 24 24">
+    <path d="M5.6 3.4v5.2a2.9 2.9 0 0 0 5.8 0V3.4"/>
+    <path d="M8.5 11.5v9.1"/>
+    <path d="M18.6 3.4c-2.3 1.5-3.4 3.8-3.4 6.4 0 1.6.9 2.5 2.3 2.5h1.1z"/>
+    <path d="M18.6 12.3v8.3"/>
+  </symbol>
+
+  <symbol id="i-moon" viewBox="0 0 24 24">
+    <path d="M20.1 14.6A8.6 8.6 0 0 1 9.4 3.9 8.6 8.6 0 1 0 20.1 14.6z"/>
+  </symbol>
+
+  <symbol id="i-drop" viewBox="0 0 24 24">
+    <path d="M12 3.2c3.3 3.6 5.6 6.5 5.6 9.5a5.6 5.6 0 0 1-11.2 0c0-3 2.3-5.9 5.6-9.5z"/>
+  </symbol>
+
+  <symbol id="i-budget" viewBox="0 0 24 24">
+    <rect x="2.4" y="5.6" width="19.2" height="12.8" rx="3.4"/>
+    <circle cx="12" cy="12" r="3"/>
+  </symbol>
+
+  <symbol id="i-mug" viewBox="0 0 24 24">
+    <path d="M4.2 9.2h12v5.6a4.6 4.6 0 0 1-4.6 4.6H8.8a4.6 4.6 0 0 1-4.6-4.6z"/>
+    <path d="M16.2 10.6h1.6a2.6 2.6 0 0 1 0 5.2h-1.6"/>
+    <path d="M8 3.2v2.6"/>
+    <path d="M12.2 2.8v3"/>
+  </symbol>
+
+  <symbol id="i-bike" viewBox="0 0 24 24">
+    <circle cx="5.4" cy="16.6" r="3.6"/>
+    <circle cx="18.6" cy="16.6" r="3.6"/>
+    <path d="M5.4 16.6l4-8.4h5"/>
+    <path d="M9.4 8.2l5.2 8.4"/>
+    <path d="M18.6 16.6l-2.4-6.6"/>
+    <path d="M14.6 5.4h2.4"/>
+  </symbol>
+
+  <symbol id="i-run" viewBox="0 0 24 24">
+    <circle class="solid" cx="15.4" cy="4.4" r="2"/>
+    <path d="M13.6 20.6l1.8-5-3.2-2.6.9-4.6"/>
+    <path d="M13.1 8.4L9.6 10l-1.2 3.2"/>
+    <path d="M13.1 8.4l3.6 1.6 1.8 3.4h2.4"/>
+    <path d="M17.2 15.6l1.4 5"/>
+  </symbol>
+
+  <symbol id="i-bolt" viewBox="0 0 24 24">
+    <path d="M13.4 2.4L4.6 13.6h6.2l-1.2 8 8.8-11.2h-6.2z"/>
+  </symbol>
+
+  <symbol id="i-scale" viewBox="0 0 24 24">
+    <path d="M7.4 3.6v16.8"/>
+    <path d="M3.4 7.6l4-4 4 4"/>
+    <path d="M16.6 20.4V3.6"/>
+    <path d="M12.6 16.4l4 4 4-4"/>
+  </symbol>
+
+  <symbol id="i-star" viewBox="0 0 24 24">
+    <path d="M12 3.2l2.7 5.6 6.1.9-4.4 4.3 1 6.1L12 17.2l-5.4 2.9 1-6.1L3.2 9.7l6.1-.9z"/>
+  </symbol>
+
+  <symbol id="i-chevron" viewBox="0 0 24 24">
+    <path d="M9 5.5l7 6.5-7 6.5"/>
+  </symbol>
+
+  <symbol id="i-camera" viewBox="0 0 24 24">
+    <path d="M3.2 8.4a2.4 2.4 0 0 1 2.4-2.4h1.9l1.4-2.2h6.2l1.4 2.2h1.9a2.4 2.4 0 0 1 2.4 2.4v9.2a2.4 2.4 0 0 1-2.4 2.4H5.6a2.4 2.4 0 0 1-2.4-2.4z"/>
+    <circle cx="12" cy="12.6" r="3.4"/>
+  </symbol>
+
+  <symbol id="i-copy" viewBox="0 0 24 24">
+    <rect x="8.4" y="8.4" width="12.2" height="12.2" rx="3"/>
+    <path d="M15.6 5.4a3 3 0 0 0-3-3H6.4a3 3 0 0 0-3 3v6.2a3 3 0 0 0 3 3"/>
+  </symbol>
+
+  <symbol id="i-restore" viewBox="0 0 24 24">
+    <path d="M3.6 12a8.4 8.4 0 1 0 2.6-6.1L3.4 8.6"/>
+    <path d="M3.2 4.2v4.8h4.8"/>
+  </symbol>
+
+  <symbol id="i-download" viewBox="0 0 24 24">
+    <path d="M12 3.4v11.4"/>
+    <path d="M7.6 10.6L12 14.8l4.4-4.2"/>
+    <path d="M4.2 18.2v.6a1.8 1.8 0 0 0 1.8 1.8h12a1.8 1.8 0 0 0 1.8-1.8v-.6"/>
+  </symbol>
+
+  <symbol id="i-upload" viewBox="0 0 24 24">
+    <path d="M12 14.8V3.4"/>
+    <path d="M7.6 7.6L12 3.4l4.4 4.2"/>
+    <path d="M4.2 18.2v.6a1.8 1.8 0 0 0 1.8 1.8h12a1.8 1.8 0 0 0 1.8-1.8v-.6"/>
+  </symbol>
+
+  <symbol id="i-trash" viewBox="0 0 24 24">
+    <path d="M3.8 6.2h16.4"/>
+    <path d="M8.6 6.2V4.6a1.8 1.8 0 0 1 1.8-1.8h3.2a1.8 1.8 0 0 1 1.8 1.8v1.6"/>
+    <path d="M5.8 6.2l.9 12.4a2 2 0 0 0 2 1.8h6.6a2 2 0 0 0 2-1.8l.9-12.4"/>
+  </symbol>
+
+</defs></svg>
 
 <div class="app">
 
   <nav class="nav" id="nav">
     <div class="brand">
-      <div class="mark">💪</div>
+      <div class="mark"><svg class="ico"><use href="#i-brand"/></svg></div>
       <div class="t">20-Day Challenge</div>
       <div class="s">Aug 2 – 21, 2026</div>
     </div>
-    <button class="tab active" data-tab="today"><span class="ic">✅</span>Today</button>
-    <button class="tab" data-tab="workout"><span class="ic">🏋️</span>Workout</button>
-    <button class="tab" data-tab="progress"><span class="ic">📈</span>Progress</button>
-    <button class="tab" data-tab="guide"><span class="ic">📖</span>Guide</button>
+    <button class="tab active" data-tab="today"><span class="ic"><svg class="ico"><use href="#i-today"/></svg></span>Today</button>
+    <button class="tab" data-tab="workout"><span class="ic"><svg class="ico"><use href="#i-workout"/></svg></span>Workout</button>
+    <button class="tab" data-tab="progress"><span class="ic"><svg class="ico"><use href="#i-progress"/></svg></span>Progress</button>
+    <button class="tab" data-tab="guide"><span class="ic"><svg class="ico"><use href="#i-guide"/></svg></span>Guide</button>
     <div class="navfoot">
       <div class="lbl">Where you are</div>
       <div class="big" id="navSummary"></div>
@@ -424,7 +602,7 @@
           <div>
             <div class="card" id="workoutTodayCard"></div>
             <div class="weight-guide">
-              <h3>Weight Guide</h3>
+              <h3><svg class="ico"><use href="#i-scale"/></svg>Weight Guide</h3>
               <p>8–12 reps per set — last 2–3 genuinely hard, form stays clean.</p>
               <p>Can't hit 8 clean? Drop the weight. 12 feels easy? Go up.</p>
               <div class="pill-row">
@@ -442,7 +620,7 @@
               <div class="step"><div class="num">3</div><div class="body"><div class="name">Single-arm DB row</div><div class="cue">Flat back, pull to hip.</div></div><div class="sxr">3×10-12</div></div>
               <div class="step"><div class="num">4</div><div class="body"><div class="name">DB shoulder press</div><div class="cue">Straight overhead, no arching.</div></div><div class="sxr">3×10-12</div></div>
               <div class="step"><div class="num">5</div><div class="body"><div class="name">DB Romanian deadlift</div><div class="cue">Soft knees, hinge at hips.</div></div><div class="sxr">3×10-12</div></div>
-              <div class="step power"><div class="num">6</div><div class="body"><div class="name">Box jumps<span class="badge">POWER</span></div><div class="cue">1m block, full recovery between sets.</div></div><div class="sxr">3×5</div></div>
+              <div class="step power"><div class="num">6</div><div class="body"><div class="name">Box jumps<span class="badge"><svg class="ico"><use href="#i-bolt"/></svg>POWER</span></div><div class="cue">1m block, full recovery between sets.</div></div><div class="sxr">3×5</div></div>
               <div class="step"><div class="num">7</div><div class="body"><div class="name">Plank</div><div class="cue">Shoulders to heels, straight line.</div></div><div class="sxr">3×30-45s</div></div>
               <div class="step"><div class="num">8</div><div class="body"><div class="name">Lying leg raises</div><div class="cue">Slow, back stays flat.</div></div><div class="sxr">3×12</div></div>
             </div>
@@ -457,16 +635,16 @@
               <div class="step"><div class="num">3</div><div class="body"><div class="name">Incline / decline push-ups</div><div class="cue">Hands or feet elevated.</div></div><div class="sxr">3×max</div></div>
               <div class="step"><div class="num">4</div><div class="body"><div class="name">Lateral + front raises</div><div class="cue">Light, controlled, no swing.</div></div><div class="sxr">3×12 ea</div></div>
               <div class="step"><div class="num">5</div><div class="body"><div class="name">Single-leg RDL</div><div class="cue">One dumbbell, balance-focused.</div></div><div class="sxr">3×10/leg</div></div>
-              <div class="step power"><div class="num">6</div><div class="body"><div class="name">Stair sprints<span class="badge">POWER</span></div><div class="cue">Walk back down for full recovery.</div></div><div class="sxr">5×20-30</div></div>
+              <div class="step power"><div class="num">6</div><div class="body"><div class="name">Stair sprints<span class="badge"><svg class="ico"><use href="#i-bolt"/></svg>POWER</span></div><div class="cue">Walk back down for full recovery.</div></div><div class="sxr">5×20-30</div></div>
               <div class="step"><div class="num">7</div><div class="body"><div class="name">Side plank</div><div class="cue">Stack feet, hips level.</div></div><div class="sxr">3×30s/side</div></div>
               <div class="step"><div class="num">8</div><div class="body"><div class="name">Bicycle crunches</div><div class="cue">Slow, elbow to opposite knee.</div></div><div class="sxr">3×15</div></div>
             </div>
 
             <div class="card">
               <h3>Cardio Routes <span class="tag cardio">Days 2 · 3 · 6</span></h3>
-              <div class="note">All routes start and end at <b>3446 Dundas St</b> — distances below are door-to-door.</div>
+              <div class="note">All routes start and end at <b>home</b> — distances below are door-to-door.</div>
               <div class="cardio-card">
-                <h4><span class="swatch" style="background:var(--cardio1)"></span>Bike — 20+ km</h4>
+                <h4><svg class="ico bike"><use href="#i-bike"/></svg>Bike — 20+ km</h4>
                 <ul>
                   <li><b>Trans Canada Trail</b> out-and-back — ~26-27 km — flat, the easy day (Day 2)</li>
                   <li><b>Burnaby Mountain</b> fire roads — ~22-23 km — real climbing</li>
@@ -474,7 +652,7 @@
                 </ul>
               </div>
               <div class="cardio-card">
-                <h4><span class="swatch" style="background:var(--cardio2)"></span>Run — 5+ km</h4>
+                <h4><svg class="ico run"><use href="#i-run"/></svg>Run — 5+ km</h4>
                 <ul>
                   <li><b>Trans Canada Trail</b> out-and-back — ~5 km, starts at your door</li>
                   <li><b>Empire Fields track</b> — ~0.3 km away, 580m laps or 8×400m repeats</li>
@@ -514,17 +692,17 @@
             </div>
 
             <div class="card" id="dataCard">
-              <h3>Move Your Data <span class="tiny">phone ⇄ laptop</span></h3>
+              <h3>Move Your Data <span class="tiny">phone to laptop</span></h3>
               <div class="note">Everything is saved in this browser only. To carry your log to another device, copy the sync code here and paste it there.</div>
               <textarea class="code" id="syncBox" placeholder="Your sync code appears here — or paste one in and press Restore." spellcheck="false"></textarea>
               <div class="btn-row">
-                <button class="btn primary small" id="btnCopyCode">Copy sync code</button>
-                <button class="btn small" id="btnRestoreCode">Restore from code</button>
-                <button class="btn ghost small" id="btnDownload">Download backup</button>
-                <label class="btn ghost small" style="display:inline-flex;">Load file<input type="file" accept="application/json,.json" id="fileInput" style="display:none;"></label>
+                <button class="btn primary small" id="btnCopyCode"><svg class="ico"><use href="#i-copy"/></svg>Copy sync code</button>
+                <button class="btn small" id="btnRestoreCode"><svg class="ico"><use href="#i-restore"/></svg>Restore from code</button>
               </div>
               <div class="btn-row">
-                <button class="btn danger small" id="btnReset">Erase all data</button>
+                <button class="btn ghost small" id="btnDownload"><svg class="ico"><use href="#i-download"/></svg>Download backup</button>
+                <label class="btn ghost small"><svg class="ico"><use href="#i-upload"/></svg>Load file<input type="file" accept="application/json,.json" id="fileInput" style="display:none;"></label>
+                <button class="btn danger small" id="btnReset"><svg class="ico"><use href="#i-trash"/></svg>Erase all</button>
               </div>
               <div class="note" style="margin-top:12px;">The sync code carries checkmarks, notes, measurements and reflections. Progress photos are too large for a code — use <b>Download backup</b> to move those.</div>
             </div>
@@ -550,7 +728,7 @@
         <div class="cols">
           <div>
             <details class="gsec" open>
-              <summary><span class="ic">🕧</span>Ideal Daily Schedule<span class="chev">▸</span></summary>
+              <summary><svg class="ico"><use href="#i-clock"/></svg>Ideal Daily Schedule<svg class="ico chev"><use href="#i-chevron"/></svg></summary>
               <div class="gbody">
                 <p>Wake at <b>6:30 AM every day</b> — that's the anchor. A fixed wake time matters more than which hour you pick. Bedtime <b>9:30 PM</b>, nine hours back.</p>
                 <div class="timeline">
@@ -566,7 +744,7 @@
             </details>
 
             <details class="gsec">
-              <summary><span class="ic">🔁</span>The 7-Day Cycle<span class="chev">▸</span></summary>
+              <summary><svg class="ico"><use href="#i-cycle"/></svg>The 7-Day Cycle<svg class="ico chev"><use href="#i-chevron"/></svg></summary>
               <div class="gbody">
                 <p>Built so each day sets up the next: heavy lifting is never back-to-back, leg-heavy cardio never stacks on leg-heavy lifting, and the long cardio day lands when you're freshest. Repeat roughly three times across Aug 2–21.</p>
                 <table class="gtable">
@@ -583,7 +761,7 @@
             </details>
 
             <details class="gsec">
-              <summary><span class="ic">🍳</span>Nutrition Timing<span class="chev">▸</span></summary>
+              <summary><svg class="ico"><use href="#i-food"/></svg>Nutrition Timing<svg class="ico chev"><use href="#i-chevron"/></svg></summary>
               <div class="gbody">
                 <ul>
                   <li><b>Protein at every meal</b> — eggs, yogurt, chicken, powder. Spreading it beats loading it all at dinner.</li>
@@ -602,7 +780,7 @@
 
           <div>
             <details class="gsec">
-              <summary><span class="ic">🌙</span>Sleep, Optimized<span class="chev">▸</span></summary>
+              <summary><svg class="ico"><use href="#i-moon"/></svg>Sleep, Optimized<svg class="ico chev"><use href="#i-chevron"/></svg></summary>
               <div class="gbody">
                 <ul>
                   <li><b>Temperature:</b> 60–67°F, with 65°F the sweet spot most sleep researchers point to. A cooler room lets core temperature drop the way deep sleep needs.</li>
@@ -615,7 +793,7 @@
             </details>
 
             <details class="gsec">
-              <summary><span class="ic">🧴</span>Skincare &amp; Acne<span class="chev">▸</span></summary>
+              <summary><svg class="ico"><use href="#i-drop"/></svg>Skincare &amp; Acne<svg class="ico chev"><use href="#i-chevron"/></svg></summary>
               <div class="gbody">
                 <p><b>Morning:</b> cleanser → oil-free moisturizer (yes, even with oily skin — skipping it makes acne worse) → mineral SPF 30+, non-negotiable given the outdoor training.</p>
                 <p><b>Evening:</b> cleanse, always after sweating → adapalene → moisturizer.</p>
@@ -632,7 +810,7 @@
             </details>
 
             <details class="gsec">
-              <summary><span class="ic">💵</span>Starting Budget<span class="chev">▸</span></summary>
+              <summary><svg class="ico"><use href="#i-budget"/></svg>Starting Budget<svg class="ico chev"><use href="#i-chevron"/></svg></summary>
               <div class="gbody">
                 <table class="gtable">
                   <tr><td>Acne cleanser (benzoyl peroxide or salicylic acid)</td><td>$12–18</td></tr>
@@ -649,7 +827,7 @@
             </details>
 
             <details class="gsec">
-              <summary><span class="ic">🥣</span>Breakfast Ideas<span class="chev">▸</span></summary>
+              <summary><svg class="ico"><use href="#i-mug"/></svg>Breakfast Ideas<svg class="ico chev"><use href="#i-chevron"/></svg></summary>
               <div class="gbody">
                 <ul>
                   <li><b>Protein oats</b> — oats cooked in milk, protein powder stirred in once slightly cooled, peanut butter and banana on top.</li>
@@ -674,12 +852,13 @@
 (function(){
   "use strict";
 
-  var START_Y = 2026, START_M = 7, START_D = 2; // Aug 2, 2026
-  var START = new Date(START_Y, START_M, START_D);
+  var START = new Date(2026, 7, 2); // Aug 2, 2026
   var TOTAL_DAYS = 20;
   var BONUS = 21;
   var MILESTONES = [1, 8, 15];
   var KEY = "ldc-state-v1";
+
+  function icon(id, cls){ return '<svg class="ico' + (cls ? " " + cls : "") + '"><use href="#i-' + id + '"/></svg>'; }
 
   var DAY_TYPES = {
     1:{type:"lift",  tag:"Lift",  title:"Lift Day A",             focus:"Heavy full-body lift — weights, calisthenics, box jumps."},
@@ -701,7 +880,7 @@
     {key:"journal",  short:"Journal",  title:"Journal",         hint:"A few lines, last thing before lights out", note:"area"}
   ];
 
-  /* ---------- date helpers ---------- */
+  /* ---------- dates ---------- */
   function cyclePos(n){ return ((n - 1) % 7) + 1; }
   function dayType(n){ return DAY_TYPES[cyclePos(n)]; }
   function coldShowerDay(n){ var p = cyclePos(n); return p === 2 || p === 4 || p === 6; }
@@ -769,7 +948,7 @@
     });
   }
 
-  /* ---------- daily schedule, derived from the day type ---------- */
+  /* ---------- schedule ---------- */
   function scheduleFor(n){
     var info = dayType(n), p = cyclePos(n), out = [];
     out.push({t:"6:30 – 6:45 AM", d:"Up, water, 10–15 min outside in natural light. Quick rinse, moisturizer, sunscreen."});
@@ -796,14 +975,14 @@
     return out;
   }
 
-  /* ---------- render: top ---------- */
+  /* ---------- top ---------- */
   function renderTop(){
     var idx = currentDayIndex();
     var isBonus = selectedDay === BONUS;
     var d = isBonus ? dateForDay(TOTAL_DAYS + 1) : dateForDay(selectedDay);
     var cnt = isBonus ? 0 : doneCount(selectedDay);
     var pct = Math.round((cnt / ITEMS.length) * 100);
-    var ringColor = pct >= 100 ? "var(--cardio1)" : pct > 0 ? "var(--power)" : "var(--track)";
+    var rc = pct >= 100 ? "var(--cardio1)" : pct > 0 ? "var(--power)" : "var(--track)";
 
     document.getElementById("topbar").innerHTML =
       '<div style="min-width:0;">' +
@@ -815,7 +994,7 @@
         '</p>' +
       '</div>' +
       (isBonus ? '' :
-      '<div class="ring" style="--pct:' + pct + '%;--rc:' + ringColor + ';" title="' + cnt + ' of ' + ITEMS.length + ' habits logged">' +
+      '<div class="ring" style="--pct:' + pct + '%;--rc:' + rc + ';" title="' + cnt + ' of ' + ITEMS.length + ' habits logged">' +
         '<div class="inner"><div class="n">' + cnt + '/' + ITEMS.length + '</div><div class="l">habits</div></div>' +
       '</div>');
 
@@ -845,7 +1024,7 @@
     else nav.innerHTML = "Day <b>" + idx + "</b> of " + TOTAL_DAYS + " · <b>" + (TOTAL_DAYS - idx) + "</b> to go";
   }
 
-  /* ---------- render: day strip ---------- */
+  /* ---------- day strip ---------- */
   function renderStrip(){
     var idx = currentDayIndex();
     var el = document.getElementById("daystrip");
@@ -857,7 +1036,7 @@
         '><span class="num">' + n + '</span><span class="dot"></span></button>';
     }
     html += '<button class="daychip' + (selectedDay === BONUS ? " selected" : "") + (idx === BONUS ? " today" : "") +
-      '" data-day="' + BONUS + '" aria-label="Bonus reflection day"><span class="num">★</span><span class="dot"></span></button>';
+      '" data-day="' + BONUS + '" aria-label="Bonus reflection day">' + icon("star", "star") + '<span class="dot"></span></button>';
     el.innerHTML = html;
     Array.prototype.forEach.call(el.querySelectorAll(".daychip"), function(c){
       c.addEventListener("click", function(){
@@ -871,7 +1050,7 @@
     if (sel) el.scrollLeft = Math.max(0, sel.offsetLeft - el.clientWidth / 2 + sel.clientWidth / 2);
   }
 
-  /* ---------- render: today ---------- */
+  /* ---------- today ---------- */
   function renderToday(){
     var head = document.getElementById("todayHeaderCard");
     var list = document.getElementById("checklistCard");
@@ -882,11 +1061,10 @@
       head.innerHTML = '<h3>Aug 22 — Bonus Day <span class="tag rest">Reflect</span></h3>' +
         '<div class="note">Light movement only, a full night\'s sleep, and a look back at the 20 days.</div>';
       list.innerHTML = '<h3>Nothing to tick today</h3><div class="note">The three reflection questions live on the Progress tab. Answer them while the 20 days are still fresh.</div>';
-      sched.innerHTML = '<h3>What today is for</h3>' +
-        '<div class="timeline">' +
-          '<div class="tl-item"><div class="t">Move gently</div><div class="d">A walk or an easy stretch. Nothing that needs recovering from.</div></div>' +
-          '<div class="tl-item"><div class="t">Sleep in properly</div><div class="d">One full, unhurried night after twenty on a fixed schedule.</div></div>' +
-          '<div class="tl-item hi"><div class="t">Look back</div><div class="d">Read your journal entries end to end, then answer the three questions.</div></div>' +
+      sched.innerHTML = '<h3>What today is for</h3><div class="timeline">' +
+        '<div class="tl-item"><div class="t">Move gently</div><div class="d">A walk or an easy stretch. Nothing that needs recovering from.</div></div>' +
+        '<div class="tl-item"><div class="t">Sleep in properly</div><div class="d">One full, unhurried night after twenty on a fixed schedule.</div></div>' +
+        '<div class="tl-item hi"><div class="t">Look back</div><div class="d">Read your journal entries end to end, then answer the three questions.</div></div>' +
         '</div>';
       sess.innerHTML = '<h3>Keep what worked</h3><div class="note">Whichever habits felt easiest by Day 20 are the ones most likely to stick. Decide which two or three carry forward.</div>';
       return;
@@ -939,7 +1117,7 @@
       });
     });
 
-    sched.innerHTML = '<h3>Today\'s Shape <span class="tiny">6:30 AM → 9:30 PM</span></h3><div class="timeline">' +
+    sched.innerHTML = '<h3>Today\'s Shape <span class="tiny">6:30 AM to 9:30 PM</span></h3><div class="timeline">' +
       scheduleFor(selectedDay).map(function(x){
         return '<div class="tl-item' + (x.hi ? " hi" : "") + '"><div class="t">' + x.t + '</div><div class="d">' + x.d + '</div></div>';
       }).join("") + '</div>';
@@ -965,7 +1143,6 @@
     }
   }
 
-  /* ---------- render: workout header ---------- */
   function renderWorkoutHead(){
     var n = selectedDay === BONUS ? TOTAL_DAYS : selectedDay;
     var info = dayType(n);
@@ -974,15 +1151,15 @@
       '<div class="note">' + esc(info.focus) + '</div>';
   }
 
-  /* ---------- render: progress ---------- */
+  /* ---------- progress ---------- */
   function renderProgress(){
     var idx = currentDayIndex();
     var elapsed = Math.max(0, Math.min(TOTAL_DAYS, idx));
 
-    var streakFrom = elapsed;
-    if (elapsed >= 1 && doneCount(elapsed) < ITEMS.length) streakFrom = elapsed - 1;
+    var from = elapsed;
+    if (elapsed >= 1 && doneCount(elapsed) < ITEMS.length) from = elapsed - 1;
     var streak = 0;
-    for (var n = streakFrom; n >= 1; n--){
+    for (var n = from; n >= 1; n--){
       if (doneCount(n) === ITEMS.length) streak++; else break;
     }
 
@@ -1051,10 +1228,10 @@
           '<div class="mfield"><label>Thigh in</label><input type="number" step="0.1" inputmode="decimal" data-m="' + m + '" data-f="thigh" value="' + esc(ms.thigh) + '"></div>' +
         '</div>' +
         '<div class="photo-row">' +
-          '<div class="photo-thumb">' + (ms.photo ? '<img src="' + ms.photo + '" alt="Day ' + m + ' progress photo">' : "No photo") + '</div>' +
-          '<label class="btn ghost small" style="display:inline-flex;">' + (ms.photo ? "Replace" : "Add photo") +
+          '<div class="photo-thumb">' + (ms.photo ? '<img src="' + ms.photo + '" alt="Day ' + m + ' progress photo">' : icon("camera")) + '</div>' +
+          '<label class="btn ghost small">' + icon("camera") + (ms.photo ? "Replace" : "Add photo") +
             '<input type="file" accept="image/*" data-photo="' + m + '" style="display:none;"></label>' +
-          (ms.photo ? '<button class="btn ghost small" data-rmphoto="' + m + '">Remove</button>' : '') +
+          (ms.photo ? '<button class="btn ghost small" data-rmphoto="' + m + '">' + icon("trash") + 'Remove</button>' : '') +
         '</div></div>';
     });
     card.innerHTML = html;
@@ -1120,8 +1297,7 @@
 
   /* ---------- data portability ---------- */
   function toB64(obj){
-    var json = JSON.stringify(obj);
-    var bytes = new TextEncoder().encode(json);
+    var bytes = new TextEncoder().encode(JSON.stringify(obj));
     var bin = "";
     for (var i = 0; i < bytes.length; i++) bin += String.fromCharCode(bytes[i]);
     return btoa(bin);
@@ -1138,7 +1314,7 @@
     return copy;
   }
   function applyImported(obj){
-    if (!obj || typeof obj !== "object" || !obj.days) { toast("That doesn't look like a challenge backup."); return false; }
+    if (!obj || typeof obj !== "object" || !obj.days){ toast("That doesn't look like a challenge backup."); return false; }
     state = {
       days: obj.days || {},
       milestones: obj.milestones || {},
@@ -1216,7 +1392,6 @@
     t.addEventListener("click", function(){ switchTab(t.getAttribute("data-tab")); });
   });
 
-  /* ---------- keyboard: arrow between days ---------- */
   document.addEventListener("keydown", function(e){
     if (e.target.matches("input, textarea")) return;
     if (e.key === "ArrowRight" && selectedDay < BONUS){ selectedDay++; renderAll(); }
@@ -1235,3 +1410,5 @@
   switchTab("today");
 })();
 </script>
+</body>
+</html>
