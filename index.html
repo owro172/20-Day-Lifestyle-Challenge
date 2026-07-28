@@ -5,53 +5,49 @@
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
 <title>20-Day Challenge</title>
 <meta name="description" content="Daily checklist, workout plan, progress tracking and the full guide for a 20-day lifestyle challenge.">
-<meta name="theme-color" content="#F2F2F7" media="(prefers-color-scheme: light)">
-<meta name="theme-color" content="#161618" media="(prefers-color-scheme: dark)">
+<meta name="theme-color" content="#08080A">
 <meta name="mobile-web-app-capable" content="yes">
 <meta name="apple-mobile-web-app-capable" content="yes">
-<meta name="apple-mobile-web-app-status-bar-style" content="default">
+<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
 <meta name="apple-mobile-web-app-title" content="20-Day">
 <link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='%23FF3B5C' stroke-width='2.4' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpath d='M19.36 7.75A8.5 8.5 0 1 1 14.2 3.79'/%3E%3Cpath d='M8.5 12.3l2.5 2.5 5-5.6'/%3E%3C/svg%3E">
 <style>
-  :root{
-    --bg:#F2F2F7;
+  /* Dark is this app's default ground, regardless of OS preference.
+     A light set stays fully designed and takes over via data-theme="light". */
+  :root, :root[data-theme="dark"]{
+    --outer:#08080A;
+    --bg:#101014;
+    --card:#1A1A21;
+    --ink:#F4F4F7;
+    --muted:#8D8D9A;
+    --hair:#2A2A34;
+    --edge: rgba(255,255,255,0.055);
+    --lift1:#FF3B5C; --lift2:#FF7A59;
+    --cardio1:#30D158; --cardio2:#00C7BE;
+    --rest1:#64D2FF; --rest2:#6E9BFF;
+    --power:#FFD60A;
+    --track: rgba(255,255,255,0.09);
+    --shadow: 0 2px 14px rgba(0,0,0,0.45);
+    --shadow-lg: 0 24px 60px rgba(0,0,0,0.62);
+    --navbg: rgba(18,18,23,0.88);
+  }
+  :root[data-theme="light"]{
     --outer:#E4E4EA;
+    --bg:#F2F2F7;
     --card:#FFFFFF;
     --ink:#1C1C1E;
     --muted:#8E8E93;
     --hair:#E6E6EC;
-    --lift1:#FF3B5C; --lift2:#FF7A59;
-    --cardio1:#30D158; --cardio2:#00C7BE;
-    --rest1:#64D2FF; --rest2:#5E8BFF;
-    --power:#FFD60A;
+    --edge: rgba(0,0,0,0.035);
+    --rest2:#5E8BFF;
     --track: rgba(0,0,0,0.08);
     --shadow: 0 3px 16px rgba(0,0,0,0.06);
     --shadow-lg: 0 20px 50px rgba(0,0,0,0.16);
     --navbg: rgba(255,255,255,0.92);
   }
-  @media (prefers-color-scheme: dark){
-    :root{
-      --bg:#161618; --outer:#000000; --card:#232326; --ink:#F2F2F2; --muted:#98989D; --hair:#37373B;
-      --track: rgba(255,255,255,0.10);
-      --shadow: 0 3px 16px rgba(0,0,0,0.35);
-      --shadow-lg: 0 20px 50px rgba(0,0,0,0.55);
-      --navbg: rgba(35,35,38,0.92);
-    }
-  }
-  :root[data-theme="dark"]{
-    --bg:#161618; --outer:#000000; --card:#232326; --ink:#F2F2F2; --muted:#98989D; --hair:#37373B;
-    --track: rgba(255,255,255,0.10);
-    --shadow: 0 3px 16px rgba(0,0,0,0.35);
-    --shadow-lg: 0 20px 50px rgba(0,0,0,0.55);
-    --navbg: rgba(35,35,38,0.92);
-  }
-  :root[data-theme="light"]{
-    --bg:#F2F2F7; --outer:#E4E4EA; --card:#FFFFFF; --ink:#1C1C1E; --muted:#8E8E93; --hair:#E6E6EC;
-    --track: rgba(0,0,0,0.08);
-    --shadow: 0 3px 16px rgba(0,0,0,0.06);
-    --shadow-lg: 0 20px 50px rgba(0,0,0,0.16);
-    --navbg: rgba(255,255,255,0.92);
-  }
+
+  /* Registered so the completion ring can animate its sweep. */
+  @property --pct{ syntax:"<percentage>"; inherits:false; initial-value:0%; }
 
   *{box-sizing:border-box; -webkit-font-smoothing:antialiased;}
   html,body{height:100%;}
@@ -109,7 +105,14 @@
     flex:none; width:58px; height:58px; border-radius:50%;
     display:flex; align-items:center; justify-content:center; position:relative;
     background:conic-gradient(var(--rc,var(--cardio1)) var(--pct,0%), var(--track) 0);
+    transition:--pct .55s cubic-bezier(.22,1,.36,1);
   }
+  @keyframes ringPop{
+    0%{transform:scale(1); box-shadow:0 0 0 0 rgba(48,209,88,0.45);}
+    35%{transform:scale(1.09);}
+    100%{transform:scale(1); box-shadow:0 0 0 18px rgba(48,209,88,0);}
+  }
+  .ring.celebrate{animation:ringPop .6s cubic-bezier(.34,1.4,.64,1);}
   .ring::after{content:""; position:absolute; inset:5px; border-radius:50%; background:var(--bg);}
   .ring .inner{position:relative; z-index:1; text-align:center; line-height:1;}
   .ring .n{font-size:15px; font-weight:900; font-variant-numeric:tabular-nums; letter-spacing:-0.02em;}
@@ -151,7 +154,7 @@
   .cols{display:grid; gap:0; grid-template-columns:1fr;}
   .cols > * {min-width:0;}
 
-  .card{background:var(--card); border-radius:20px; box-shadow:var(--shadow); padding:16px 18px; margin-bottom:14px;}
+  .card{background:var(--card); border:1px solid var(--edge); border-radius:20px; box-shadow:var(--shadow); padding:16px 18px; margin-bottom:14px;}
   .card > h3{font-size:15px; font-weight:800; margin:0 0 11px; letter-spacing:-0.01em; display:flex; align-items:center; justify-content:space-between; gap:10px;}
   .card > h3 .tiny{color:var(--muted); font-weight:700; font-size:11px; letter-spacing:0;}
 
@@ -172,7 +175,10 @@
     width:25px; height:25px; flex:none; border-radius:8px;
     border:2px solid var(--hair); background:var(--bg);
     margin:0; position:relative;
+    transition:border-color .15s ease;
   }
+  @keyframes boxPop{0%{transform:scale(1);} 42%{transform:scale(1.18);} 100%{transform:scale(1);}}
+  .check-row input[type="checkbox"].pop{animation:boxPop .32s cubic-bezier(.34,1.5,.64,1);}
   .check-row input[type="checkbox"]:checked{
     border-color:transparent;
     background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='white' stroke-width='3.4' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpath d='M5 12.6l4.6 4.6L19 7'/%3E%3C/svg%3E"),
@@ -206,25 +212,49 @@
 
   /* ============ stats ============ */
   .stat-strip{display:grid; grid-template-columns:repeat(3,1fr); gap:10px; margin-bottom:14px;}
-  .stat{background:var(--card); border-radius:18px; box-shadow:var(--shadow); padding:14px 10px; text-align:center;}
-  .stat .v{font-size:23px; font-weight:900; font-variant-numeric:tabular-nums; letter-spacing:-0.025em; line-height:1.1;}
-  .stat .k{font-size:9.5px; font-weight:800; color:var(--muted); text-transform:uppercase; letter-spacing:0.06em; margin-top:3px;}
-  .stat.fire .v{background:linear-gradient(135deg,var(--lift1),var(--power)); -webkit-background-clip:text; background-clip:text; color:transparent;}
+  .stat{
+    position:relative; overflow:hidden; text-align:center;
+    background:var(--card); border:1px solid var(--edge); border-radius:18px;
+    box-shadow:var(--shadow); padding:14px 10px 13px;
+  }
+  .stat::before{content:""; position:absolute; inset:0; pointer-events:none;}
+  .stat > *{position:relative; z-index:1;}
+  .stat .ico{width:16px; height:16px; margin:0 auto 8px; stroke-width:2.1;}
+  .stat .v{font-size:26px; font-weight:900; font-variant-numeric:tabular-nums; letter-spacing:-0.035em; line-height:1;}
+  .stat .k{font-size:9.5px; font-weight:800; color:var(--muted); text-transform:uppercase; letter-spacing:0.06em; margin-top:6px;}
+  .stat.streak{border-color:rgba(255,159,10,0.24);}
+  .stat.streak::before{background:radial-gradient(85% 100% at 50% 0%, rgba(255,159,10,0.17), transparent 68%);}
+  .stat.streak .ico{color:#FF9F0A;}
+  .stat.streak .v{background:linear-gradient(135deg,var(--power),var(--lift1)); -webkit-background-clip:text; background-clip:text; color:transparent;}
+  .stat.days{border-color:rgba(48,209,88,0.22);}
+  .stat.days::before{background:radial-gradient(85% 100% at 50% 0%, rgba(48,209,88,0.15), transparent 68%);}
+  .stat.days .ico{color:var(--cardio1);}
+  .stat.avg{border-color:rgba(110,155,255,0.22);}
+  .stat.avg::before{background:radial-gradient(85% 100% at 50% 0%, rgba(110,155,255,0.15), transparent 68%);}
+  .stat.avg .ico{color:var(--rest2);}
 
   .pgrid{display:grid; grid-template-columns:repeat(7,1fr); gap:7px;}
   .pcell{
     aspect-ratio:1; border-radius:9px; background:var(--track); border:1.5px solid transparent;
     display:flex; align-items:center; justify-content:center; padding:0;
     font-size:10.5px; font-weight:800; color:var(--muted); font-variant-numeric:tabular-nums;
+    transition:box-shadow .2s ease;
   }
   .pcell.future{background:transparent; border:1.5px dashed var(--hair);}
   .pcell.today-mark{border-color:var(--lift1); border-style:solid;}
+  .pcell.full{box-shadow:0 0 0 1px rgba(48,209,88,0.3), 0 3px 12px rgba(48,209,88,0.24);}
+  .pcell.part{box-shadow:0 0 0 1px rgba(255,180,10,0.24), 0 2px 9px rgba(255,180,10,0.16);}
   .legend{display:flex; align-items:center; gap:13px; font-size:10.5px; color:var(--muted); font-weight:700; margin:11px 2px 0; flex-wrap:wrap;}
   .legend .sw{display:inline-flex; align-items:center; gap:5px;}
   .legend i{width:10px; height:10px; border-radius:3px; display:inline-block;}
 
   .bar{height:9px; border-radius:999px; background:var(--track); overflow:hidden;}
-  .bar > span{display:block; height:100%; border-radius:999px; background:linear-gradient(90deg,var(--cardio1),var(--cardio2));}
+  .bar > span{
+    display:block; height:100%; border-radius:999px;
+    background:linear-gradient(90deg,var(--cardio1),var(--cardio2));
+    box-shadow:0 0 10px rgba(48,209,88,0.4);
+    transition:width .45s cubic-bezier(.22,1,.36,1);
+  }
   .habit-row{display:flex; align-items:center; gap:11px; padding:6px 0; font-size:12.5px; font-weight:700;}
   .habit-row .name{width:74px; flex:none; color:var(--muted);}
   .habit-row .bar{flex:1;}
@@ -276,20 +306,31 @@
 
   /* ============ workout ============ */
   .weight-guide{
-    background:linear-gradient(135deg,#1C1C1E,#3A3A3C); color:#fff;
-    border-radius:20px; padding:16px 18px 14px; margin-bottom:14px; box-shadow:0 6px 20px rgba(0,0,0,0.2);
+    position:relative; overflow:hidden; color:var(--ink);
+    background:var(--card); border:1px solid rgba(255,214,10,0.24);
+    border-radius:20px; padding:16px 18px 14px; margin-bottom:14px; box-shadow:var(--shadow);
   }
-  .weight-guide h3{color:#fff; font-size:15px; margin:0 0 8px; font-weight:800; display:flex; align-items:center; gap:8px;}
+  .weight-guide::before{
+    content:""; position:absolute; inset:0; pointer-events:none;
+    background:radial-gradient(115% 105% at 0% 0%, rgba(255,214,10,0.14), transparent 62%);
+  }
+  .weight-guide > *{position:relative; z-index:1;}
+  .weight-guide h3{color:var(--ink); font-size:15px; margin:0 0 8px; font-weight:800; display:flex; align-items:center; gap:8px;}
   .weight-guide h3 .ico{width:17px; height:17px; color:var(--power);}
-  .weight-guide p{margin:0 0 4px; font-size:12.5px; line-height:1.5; color:#D1D1D6; font-weight:600;}
-  .pill-row{display:flex; flex-wrap:wrap; gap:7px; margin-top:10px;}
-  .pill-row .pill{background:rgba(255,255,255,0.13); border-radius:999px; padding:5px 11px; font-size:11.5px; font-weight:700;}
-  .pill-row .pill b{color:var(--power);}
+  .weight-guide p{margin:0 0 4px; font-size:12.5px; line-height:1.5; color:var(--muted); font-weight:600;}
+  .pill-row{display:flex; flex-wrap:wrap; gap:7px; margin-top:11px;}
+  .pill-row .pill{
+    background:linear-gradient(135deg, rgba(255,214,10,0.15), rgba(255,159,10,0.07));
+    border:1px solid rgba(255,214,10,0.22);
+    border-radius:999px; padding:5px 11px; font-size:11.5px; font-weight:700; color:var(--muted);
+  }
+  .pill-row .pill b{color:var(--ink);}
 
-  .step{display:flex; align-items:center; gap:11px; padding:9px 2px; border-bottom:1px solid var(--hair);}
+  .step{display:flex; align-items:center; gap:11px; padding:9px 8px; margin:0 -6px; border-radius:12px; border-bottom:1px solid var(--hair);}
   .step:last-child{border-bottom:none; padding-bottom:2px;}
+  .step.power{background:linear-gradient(90deg, rgba(255,214,10,0.10), transparent 68%);}
   .step .num{flex:none; width:27px; height:27px; border-radius:50%; background:var(--hair); color:var(--muted); display:flex; align-items:center; justify-content:center; font-weight:800; font-size:12px;}
-  .step.power .num{background:linear-gradient(135deg,var(--power),#FF9F0A); color:#1C1C1E;}
+  .step.power .num{background:linear-gradient(135deg,var(--power),#FF9F0A); color:#1C1C1E; box-shadow:0 2px 10px rgba(255,180,10,0.35);}
   .step .body{flex:1; min-width:0;}
   .step .name{font-weight:800; font-size:13.5px; display:flex; align-items:center; gap:6px; flex-wrap:wrap;}
   .step .name .badge{
@@ -300,7 +341,18 @@
   .step .cue{color:var(--muted); font-size:11px; font-weight:600; margin-top:1px; line-height:1.35;}
   .step .sxr{flex:none; font-weight:800; font-size:11.5px; background:var(--hair); border-radius:999px; padding:6px 10px; white-space:nowrap; font-variant-numeric:tabular-nums;}
 
-  .cardio-card{background:var(--bg); border-radius:16px; padding:12px 14px; margin-bottom:10px;}
+  /* Today's session card on the Workout tab, tinted by day type */
+  .daycard{position:relative; overflow:hidden;}
+  .daycard::before{content:""; position:absolute; inset:0; pointer-events:none;}
+  .daycard > *{position:relative; z-index:1;}
+  .daycard.lift{border-color:rgba(255,59,92,0.24);}
+  .daycard.lift::before{background:radial-gradient(115% 130% at 0% 0%, rgba(255,59,92,0.15), transparent 62%);}
+  .daycard.cardio{border-color:rgba(48,209,88,0.24);}
+  .daycard.cardio::before{background:radial-gradient(115% 130% at 0% 0%, rgba(48,209,88,0.15), transparent 62%);}
+  .daycard.rest{border-color:rgba(110,155,255,0.24);}
+  .daycard.rest::before{background:radial-gradient(115% 130% at 0% 0%, rgba(110,155,255,0.15), transparent 62%);}
+
+  .cardio-card{background:var(--bg); border:1px solid var(--edge); border-radius:16px; padding:12px 14px; margin-bottom:10px;}
   .cardio-card h4{font-size:12px; margin:0 0 8px; font-weight:800; display:flex; align-items:center; gap:8px;}
   .cardio-card h4 .ico{width:16px; height:16px;}
   .cardio-card h4 .bike{color:var(--cardio1);}
@@ -516,6 +568,15 @@
     <path d="M12.6 16.4l4 4 4-4"/>
   </symbol>
 
+  <symbol id="i-flame" viewBox="0 0 24 24">
+    <path d="M12 2.6c.7 3.3 2.5 4.6 4 6.2 1.5 1.6 2.4 3.3 2.4 5.5a6.4 6.4 0 0 1-12.8 0c0-2.5 1.2-4.2 2.5-5.5.3 1 .9 1.8 1.8 2.2.4-3.4 1-5.7 2.1-8.4z"/>
+  </symbol>
+
+  <symbol id="i-checkcircle" viewBox="0 0 24 24">
+    <circle cx="12" cy="12" r="8.8"/>
+    <path d="M8.2 12.3l2.6 2.6 5-5.6"/>
+  </symbol>
+
   <symbol id="i-star" viewBox="0 0 24 24">
     <path d="M12 3.2l2.7 5.6 6.1.9-4.4 4.3 1 6.1L12 17.2l-5.4 2.9 1-6.1L3.2 9.7l6.1-.9z"/>
   </symbol>
@@ -668,9 +729,9 @@
 
       <section class="view" id="view-progress">
         <div class="stat-strip">
-          <div class="stat fire"><div class="v" id="statStreak">0</div><div class="k">Streak</div></div>
-          <div class="stat"><div class="v" id="statDone">0/20</div><div class="k">Full days</div></div>
-          <div class="stat"><div class="v" id="statAvg">0%</div><div class="k">Avg habits</div></div>
+          <div class="stat streak"><svg class="ico"><use href="#i-flame"/></svg><div class="v" id="statStreak">0</div><div class="k">Streak</div></div>
+          <div class="stat days"><svg class="ico"><use href="#i-checkcircle"/></svg><div class="v" id="statDone">0/20</div><div class="k">Full days</div></div>
+          <div class="stat avg"><svg class="ico"><use href="#i-progress"/></svg><div class="v" id="statAvg">0%</div><div class="k">Avg habits</div></div>
         </div>
 
         <div class="cols">
@@ -976,6 +1037,33 @@
   }
 
   /* ---------- top ---------- */
+  var ringCount = -1;
+
+  /* Updates the ring in place rather than rebuilding it, so the sweep animates
+     and completing all seven can be celebrated. */
+  function paintRing(){
+    var el = document.getElementById("ring");
+    if (!el) return;
+    var cnt = doneCount(selectedDay);
+    var pct = Math.round((cnt / ITEMS.length) * 100);
+    el.style.setProperty("--pct", pct + "%");
+    el.style.setProperty("--rc", pct >= 100 ? "var(--cardio1)" : pct > 0 ? "var(--power)" : "var(--track)");
+    el.querySelector(".n").textContent = cnt + "/" + ITEMS.length;
+    el.setAttribute("title", cnt + " of " + ITEMS.length + " habits logged");
+    if (cnt === ITEMS.length && ringCount > -1 && ringCount < ITEMS.length){
+      el.classList.remove("celebrate");
+      void el.offsetWidth;
+      el.classList.add("celebrate");
+      toast("Day " + selectedDay + " complete — all seven.");
+    }
+    ringCount = cnt;
+  }
+
+  function paintChip(n){
+    var chip = document.querySelector('.daychip[data-day="' + n + '"]');
+    if (chip) chip.classList.toggle("complete", doneCount(n) === ITEMS.length);
+  }
+
   function renderTop(){
     var idx = currentDayIndex();
     var isBonus = selectedDay === BONUS;
@@ -994,9 +1082,10 @@
         '</p>' +
       '</div>' +
       (isBonus ? '' :
-      '<div class="ring" style="--pct:' + pct + '%;--rc:' + rc + ';" title="' + cnt + ' of ' + ITEMS.length + ' habits logged">' +
+      '<div class="ring" id="ring" style="--pct:' + pct + '%;--rc:' + rc + ';" title="' + cnt + ' of ' + ITEMS.length + ' habits logged">' +
         '<div class="inner"><div class="n">' + cnt + '/' + ITEMS.length + '</div><div class="l">habits</div></div>' +
       '</div>');
+    ringCount = cnt;
 
     var jump = document.getElementById("btnToday");
     if (jump) jump.addEventListener("click", function(){ selectedDay = Math.min(Math.max(idx,1), BONUS); renderAll(); });
@@ -1107,7 +1196,12 @@
         save();
         var row = list.querySelector('[data-row="' + k + '"]');
         if (row) row.classList.toggle("checked", box.checked);
-        renderTop(); renderStrip(); renderProgress();
+        if (box.checked){
+          box.classList.remove("pop");
+          void box.offsetWidth;
+          box.classList.add("pop");
+        }
+        paintRing(); paintChip(selectedDay); renderProgress();
       });
     });
     Array.prototype.forEach.call(list.querySelectorAll("[data-note]"), function(f){
@@ -1146,7 +1240,9 @@
   function renderWorkoutHead(){
     var n = selectedDay === BONUS ? TOTAL_DAYS : selectedDay;
     var info = dayType(n);
-    document.getElementById("workoutTodayCard").innerHTML =
+    var card = document.getElementById("workoutTodayCard");
+    card.className = "card daycard " + info.type;
+    card.innerHTML =
       '<h3>Day ' + n + ' — ' + esc(info.title) + ' <span class="tag ' + info.type + '">' + info.tag + '</span></h3>' +
       '<div class="note">' + esc(info.focus) + '</div>';
   }
@@ -1154,7 +1250,11 @@
   /* ---------- progress ---------- */
   function renderProgress(){
     var idx = currentDayIndex();
-    var elapsed = Math.max(0, Math.min(TOTAL_DAYS, idx));
+    /* Count up to the later of today and the last day with anything logged, so
+       ticking ahead of the start date still shows up here. */
+    var logged = 0;
+    for (var q = 1; q <= TOTAL_DAYS; q++) if (doneCount(q) > 0) logged = q;
+    var elapsed = Math.max(logged, Math.max(0, Math.min(TOTAL_DAYS, idx)));
 
     var from = elapsed;
     if (elapsed >= 1 && doneCount(elapsed) < ITEMS.length) from = elapsed - 1;
@@ -1184,11 +1284,11 @@
         html += '<button class="pcell future" data-day="' + k + '" aria-label="Day ' + k + ', upcoming">' + k + '</button>';
         continue;
       }
-      var cc = doneCount(k), r = cc / ITEMS.length, bg, fg = "";
+      var cc = doneCount(k), r = cc / ITEMS.length, bg, fg = "", tone = "";
       if (r === 0) bg = "var(--track)";
-      else if (r >= 1){ bg = "linear-gradient(135deg,var(--cardio1),var(--cardio2))"; fg = ";color:#fff"; }
-      else { var a = 0.4 + r * 0.5; bg = "linear-gradient(135deg,rgba(255,214,10," + a + "),rgba(255,159,10," + a + "))"; fg = ";color:#3A2A00"; }
-      html += '<button class="pcell' + (k === idx ? " today-mark" : "") + '" data-day="' + k + '" style="background:' + bg + fg +
+      else if (r >= 1){ bg = "linear-gradient(135deg,var(--cardio1),var(--cardio2))"; fg = ";color:#fff"; tone = " full"; }
+      else { var a = 0.4 + r * 0.5; bg = "linear-gradient(135deg,rgba(255,214,10," + a + "),rgba(255,159,10," + a + "))"; fg = ";color:#3A2A00"; tone = " part"; }
+      html += '<button class="pcell' + tone + (k === idx ? " today-mark" : "") + '" data-day="' + k + '" style="background:' + bg + fg +
         '" title="Day ' + k + " — " + cc + " of " + ITEMS.length + ' habits" aria-label="Day ' + k + ', ' + cc + ' of ' + ITEMS.length + ' habits">' + k + '</button>';
     }
     grid.innerHTML = html;
