@@ -1,0 +1,1237 @@
+<title>20-Day Challenge</title>
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<style>
+  :root{
+    --bg:#F2F2F7;
+    --outer:#E4E4EA;
+    --card:#FFFFFF;
+    --ink:#1C1C1E;
+    --muted:#8E8E93;
+    --hair:#E6E6EC;
+    --lift1:#FF3B5C; --lift2:#FF7A59;
+    --cardio1:#30D158; --cardio2:#00C7BE;
+    --rest1:#64D2FF; --rest2:#5E8BFF;
+    --power:#FFD60A;
+    --track: rgba(0,0,0,0.08);
+    --shadow: 0 3px 16px rgba(0,0,0,0.06);
+    --shadow-lg: 0 20px 50px rgba(0,0,0,0.16);
+    --navbg: rgba(255,255,255,0.92);
+  }
+  @media (prefers-color-scheme: dark){
+    :root{
+      --bg:#161618; --outer:#000000; --card:#232326; --ink:#F2F2F2; --muted:#98989D; --hair:#37373B;
+      --track: rgba(255,255,255,0.10);
+      --shadow: 0 3px 16px rgba(0,0,0,0.35);
+      --shadow-lg: 0 20px 50px rgba(0,0,0,0.55);
+      --navbg: rgba(35,35,38,0.92);
+    }
+  }
+  :root[data-theme="dark"]{
+    --bg:#161618; --outer:#000000; --card:#232326; --ink:#F2F2F2; --muted:#98989D; --hair:#37373B;
+    --track: rgba(255,255,255,0.10);
+    --shadow: 0 3px 16px rgba(0,0,0,0.35);
+    --shadow-lg: 0 20px 50px rgba(0,0,0,0.55);
+    --navbg: rgba(35,35,38,0.92);
+  }
+  :root[data-theme="light"]{
+    --bg:#F2F2F7; --outer:#E4E4EA; --card:#FFFFFF; --ink:#1C1C1E; --muted:#8E8E93; --hair:#E6E6EC;
+    --track: rgba(0,0,0,0.08);
+    --shadow: 0 3px 16px rgba(0,0,0,0.06);
+    --shadow-lg: 0 20px 50px rgba(0,0,0,0.16);
+    --navbg: rgba(255,255,255,0.92);
+  }
+
+  *{box-sizing:border-box; -webkit-font-smoothing:antialiased;}
+  html,body{height:100%;}
+  body{
+    margin:0;
+    background:var(--outer);
+    color:var(--ink);
+    font-family:-apple-system,BlinkMacSystemFont,"Segoe UI Variable","Segoe UI",Roboto,"Helvetica Neue",Arial,sans-serif;
+    display:flex; justify-content:center;
+    overscroll-behavior-y:none;
+  }
+  button{font-family:inherit; cursor:pointer;}
+  input,textarea{font-family:inherit;}
+  :focus-visible{outline:2px solid var(--rest2); outline-offset:2px; border-radius:8px;}
+  ::selection{background:var(--lift1); color:#fff;}
+  h1,h2,h3,h4{text-wrap:balance;}
+
+  /* ============ shell ============ */
+  .app{
+    width:100%;
+    height:100vh; height:100dvh;
+    background:var(--bg);
+    display:flex; flex-direction:column;
+    overflow:hidden;
+  }
+  .main{order:1; flex:1; min-height:0; display:flex; flex-direction:column;}
+  .nav{order:2; flex:none;}
+
+  /* ============ top bar ============ */
+  .topbar{
+    flex:none; padding:16px 20px 8px;
+    padding-top:calc(16px + env(safe-area-inset-top, 0px));
+    display:flex; align-items:flex-start; justify-content:space-between; gap:14px;
+  }
+  .topbar .eyebrow{
+    font-size:10.5px; font-weight:800; color:var(--muted);
+    text-transform:uppercase; letter-spacing:0.09em; margin-bottom:3px;
+  }
+  .topbar h1{font-size:25px; font-weight:800; margin:0; letter-spacing:-0.022em; line-height:1.15;}
+  .topbar .sub{color:var(--muted); font-size:12.5px; font-weight:600; margin:5px 0 0; font-variant-numeric:tabular-nums; display:flex; align-items:center; gap:8px; flex-wrap:wrap;}
+  .jump{
+    border:1.5px solid var(--hair); background:transparent; color:var(--rest2);
+    font-size:10.5px; font-weight:800; padding:3px 9px; border-radius:999px; letter-spacing:0.02em;
+  }
+  .ring{
+    flex:none; width:58px; height:58px; border-radius:50%;
+    display:flex; align-items:center; justify-content:center; position:relative;
+    background:conic-gradient(var(--rc,var(--cardio1)) var(--pct,0%), var(--track) 0);
+  }
+  .ring::after{content:""; position:absolute; inset:5px; border-radius:50%; background:var(--bg);}
+  .ring .inner{position:relative; z-index:1; text-align:center; line-height:1;}
+  .ring .n{font-size:15px; font-weight:900; font-variant-numeric:tabular-nums; letter-spacing:-0.02em;}
+  .ring .l{font-size:8px; font-weight:800; color:var(--muted); text-transform:uppercase; letter-spacing:0.05em; margin-top:2px;}
+
+  .banner{
+    flex:none; margin:2px 20px 8px; padding:11px 14px; border-radius:14px;
+    font-size:12.5px; font-weight:700; line-height:1.42;
+    background:linear-gradient(135deg,rgba(100,210,255,0.16),rgba(94,139,255,0.16));
+    border:1px solid rgba(94,139,255,0.28);
+  }
+  .banner.done{background:linear-gradient(135deg,rgba(48,209,88,0.16),rgba(0,199,190,0.16)); border-color:rgba(48,209,88,0.3);}
+
+  /* ============ day strip ============ */
+  .daystrip{
+    flex:none; display:flex; gap:6px; overflow-x:auto;
+    padding:2px 20px 12px; scrollbar-width:none;
+  }
+  .daystrip::-webkit-scrollbar{display:none;}
+  .daychip{
+    flex:0 0 auto; min-width:42px; padding:7px 5px 6px; border-radius:13px;
+    text-align:center; background:var(--card); box-shadow:var(--shadow);
+    border:2px solid transparent; color:var(--ink);
+  }
+  .daychip .num{font-size:13px; font-weight:800; font-variant-numeric:tabular-nums; line-height:1;}
+  .daychip .dot{width:5px; height:5px; border-radius:50%; margin:4px auto 0; background:transparent;}
+  .daychip.today .dot{background:var(--lift1);}
+  .daychip.complete{background:linear-gradient(135deg,rgba(48,209,88,0.16),rgba(0,199,190,0.16));}
+  .daychip.selected{border-color:var(--lift1);}
+  .daychip.selected.complete{border-color:var(--cardio1);}
+
+  /* ============ views ============ */
+  .views{flex:1; min-height:0; overflow-y:auto; scrollbar-width:thin;}
+  .views::-webkit-scrollbar{width:8px;}
+  .views::-webkit-scrollbar-thumb{background:var(--track); border-radius:99px;}
+  .view{display:none; padding:4px 20px 32px;}
+  .view.active{display:block;}
+  .cols{display:grid; gap:0; grid-template-columns:1fr;}
+  .cols > * {min-width:0;}
+
+  .card{background:var(--card); border-radius:20px; box-shadow:var(--shadow); padding:16px 18px; margin-bottom:14px;}
+  .card > h3{font-size:15px; font-weight:800; margin:0 0 11px; letter-spacing:-0.01em; display:flex; align-items:center; justify-content:space-between; gap:10px;}
+  .card > h3 .tiny{color:var(--muted); font-weight:700; font-size:11px; letter-spacing:0;}
+
+  .tag{font-size:10.5px; font-weight:800; color:#fff; padding:5px 11px; border-radius:999px; white-space:nowrap; letter-spacing:0.02em;}
+  .tag.lift{background:linear-gradient(135deg,var(--lift1),var(--lift2));}
+  .tag.cardio{background:linear-gradient(135deg,var(--cardio1),var(--cardio2));}
+  .tag.rest{background:linear-gradient(135deg,var(--rest1),var(--rest2));}
+
+  .note{margin:0 0 12px; padding:10px 13px; background:var(--bg); border-radius:14px; font-size:11.5px; color:var(--muted); font-weight:700; line-height:1.45;}
+  .note b{color:var(--ink);}
+  .note:last-child{margin-bottom:0;}
+
+  /* ============ checklist ============ */
+  .check-row{display:flex; align-items:flex-start; gap:12px; padding:11px 2px; border-bottom:1px solid var(--hair);}
+  .check-row:last-child{border-bottom:none; padding-bottom:2px;}
+  .check-row input[type="checkbox"]{
+    appearance:none; -webkit-appearance:none;
+    width:25px; height:25px; flex:none; border-radius:8px;
+    border:2px solid var(--hair); background:var(--bg);
+    margin:0; position:relative;
+  }
+  .check-row input[type="checkbox"]:checked{background:linear-gradient(135deg,var(--cardio1),var(--cardio2)); border-color:transparent;}
+  .check-row input[type="checkbox"]:checked::after{
+    content:"✓"; color:#fff; font-size:15px; font-weight:900;
+    position:absolute; inset:0; display:flex; align-items:center; justify-content:center;
+  }
+  .check-row .label{flex:1; min-width:0;}
+  .check-row .title{font-weight:800; font-size:14px; line-height:1.35;}
+  .check-row .hint{color:var(--muted); font-size:11.5px; font-weight:600; margin-top:2px; line-height:1.35;}
+  .check-row.checked .title{color:var(--muted); text-decoration:line-through; text-decoration-color:var(--hair);}
+  .check-row input[type="text"], .check-row textarea{
+    width:100%; margin-top:7px; border:1.5px solid var(--hair); border-radius:11px;
+    padding:8px 10px; font-size:13px; color:var(--ink); background:var(--bg); resize:none;
+  }
+  .check-row textarea{min-height:56px; line-height:1.45;}
+  .check-row input[type="text"]:focus, .check-row textarea:focus{border-color:var(--rest2); outline:none;}
+  .na-row{opacity:0.45;}
+  .na-row .em{font-size:11.5px; font-weight:700; color:var(--muted);}
+
+  /* ============ schedule timeline ============ */
+  .timeline{border-left:2px solid var(--hair); padding-left:15px; margin:2px 0 0 4px;}
+  .tl-item{margin-bottom:12px; position:relative;}
+  .tl-item:last-child{margin-bottom:0;}
+  .tl-item::before{content:""; position:absolute; left:-20px; top:4px; width:8px; height:8px; border-radius:50%; background:var(--rest2);}
+  .tl-item.hi::before{background:linear-gradient(135deg,var(--lift1),var(--lift2)); box-shadow:0 0 0 3px rgba(255,59,92,0.18);}
+  .tl-item .t{font-weight:800; font-size:11.5px; font-variant-numeric:tabular-nums; letter-spacing:0.01em;}
+  .tl-item .d{color:var(--muted); font-size:11.5px; font-weight:600; margin-top:2px; line-height:1.45;}
+  .tl-item .d b{color:var(--ink);}
+
+  /* ============ stats ============ */
+  .stat-strip{display:grid; grid-template-columns:repeat(3,1fr); gap:10px; margin-bottom:14px;}
+  .stat{background:var(--card); border-radius:18px; box-shadow:var(--shadow); padding:14px 10px; text-align:center;}
+  .stat .v{font-size:23px; font-weight:900; font-variant-numeric:tabular-nums; letter-spacing:-0.025em; line-height:1.1;}
+  .stat .k{font-size:9.5px; font-weight:800; color:var(--muted); text-transform:uppercase; letter-spacing:0.06em; margin-top:3px;}
+  .stat.fire .v{background:linear-gradient(135deg,var(--lift1),var(--power)); -webkit-background-clip:text; background-clip:text; color:transparent;}
+
+  .pgrid{display:grid; grid-template-columns:repeat(7,1fr); gap:7px;}
+  .pcell{
+    aspect-ratio:1; border-radius:9px; background:var(--track); border:1.5px solid transparent;
+    display:flex; align-items:center; justify-content:center; padding:0;
+    font-size:10.5px; font-weight:800; color:var(--muted); font-variant-numeric:tabular-nums;
+  }
+  .pcell.future{background:transparent; border:1.5px dashed var(--hair);}
+  .pcell.today-mark{border-color:var(--lift1); border-style:solid;}
+  .legend{display:flex; align-items:center; gap:13px; font-size:10.5px; color:var(--muted); font-weight:700; margin:11px 2px 0; flex-wrap:wrap;}
+  .legend .sw{display:inline-flex; align-items:center; gap:5px;}
+  .legend i{width:10px; height:10px; border-radius:3px; display:inline-block;}
+
+  .bar{height:9px; border-radius:999px; background:var(--track); overflow:hidden;}
+  .bar > span{display:block; height:100%; border-radius:999px; background:linear-gradient(90deg,var(--cardio1),var(--cardio2));}
+  .habit-row{display:flex; align-items:center; gap:11px; padding:6px 0; font-size:12.5px; font-weight:700;}
+  .habit-row .name{width:74px; flex:none; color:var(--muted);}
+  .habit-row .bar{flex:1;}
+  .habit-row .pct{width:36px; flex:none; text-align:right; font-variant-numeric:tabular-nums;}
+
+  /* ============ milestones ============ */
+  .mrow{display:flex; gap:8px; margin-bottom:10px;}
+  .mfield{flex:1; min-width:0;}
+  .mfield label{display:block; font-size:10px; font-weight:800; color:var(--muted); text-transform:uppercase; letter-spacing:0.05em; margin-bottom:4px;}
+  .mfield input{
+    width:100%; border:1.5px solid var(--hair); border-radius:11px; padding:9px 10px;
+    font-size:14px; font-weight:700; color:var(--ink); background:var(--bg); font-variant-numeric:tabular-nums;
+  }
+  .mfield input:focus{border-color:var(--rest2); outline:none;}
+  .photo-row{display:flex; align-items:center; gap:10px; flex-wrap:wrap;}
+  .photo-thumb{
+    width:60px; height:60px; border-radius:14px; background:var(--bg); flex:none; overflow:hidden;
+    display:flex; align-items:center; justify-content:center;
+    border:1.5px dashed var(--hair); color:var(--muted); font-size:10px; font-weight:700; text-align:center;
+  }
+  .photo-thumb img{width:100%; height:100%; object-fit:cover;}
+  .ms-block{padding-bottom:16px; margin-bottom:16px; border-bottom:1px solid var(--hair);}
+  .ms-block:last-child{padding-bottom:0; margin-bottom:0; border-bottom:none;}
+  .ms-head{display:flex; align-items:center; justify-content:space-between; margin-bottom:9px;}
+  .ms-head .d{font-weight:800; font-size:12.5px;}
+  .ms-head .when{color:var(--muted); font-size:11px; font-weight:700;}
+
+  .btn{border:none; border-radius:12px; padding:9px 14px; font-size:12.5px; font-weight:800; background:var(--hair); color:var(--ink);}
+  .btn.primary{background:linear-gradient(135deg,var(--lift1),var(--lift2)); color:#fff;}
+  .btn.ghost{background:transparent; border:1.5px solid var(--hair); color:var(--muted);}
+  .btn.small{padding:7px 12px; font-size:11px;}
+  .btn.danger{background:transparent; border:1.5px solid var(--hair); color:var(--lift1);}
+
+  textarea.reflect, textarea.code{
+    width:100%; border:1.5px solid var(--hair); border-radius:13px; padding:10px 12px;
+    font-size:13px; color:var(--ink); background:var(--bg); min-height:58px; line-height:1.45; resize:vertical;
+  }
+  textarea.code{font-family:ui-monospace,SFMono-Regular,Menlo,Consolas,monospace; font-size:11px; min-height:74px; word-break:break-all;}
+  textarea.reflect:focus, textarea.code:focus{border-color:var(--rest2); outline:none;}
+  .qlabel{font-size:12.5px; font-weight:800; margin:13px 0 6px;}
+  .qlabel:first-of-type{margin-top:0;}
+  .btn-row{display:flex; gap:8px; flex-wrap:wrap; margin-top:10px;}
+
+  /* ============ workout ============ */
+  .weight-guide{
+    background:linear-gradient(135deg,#1C1C1E,#3A3A3C); color:#fff;
+    border-radius:20px; padding:16px 18px 14px; margin-bottom:14px; box-shadow:0 6px 20px rgba(0,0,0,0.2);
+  }
+  .weight-guide h3{color:#fff; font-size:15px; margin:0 0 8px; font-weight:800;}
+  .weight-guide p{margin:0 0 4px; font-size:12.5px; line-height:1.5; color:#D1D1D6; font-weight:600;}
+  .pill-row{display:flex; flex-wrap:wrap; gap:7px; margin-top:10px;}
+  .pill-row .pill{background:rgba(255,255,255,0.13); border-radius:999px; padding:5px 11px; font-size:11.5px; font-weight:700;}
+  .pill-row .pill b{color:var(--power);}
+
+  .step{display:flex; align-items:center; gap:11px; padding:9px 2px; border-bottom:1px solid var(--hair);}
+  .step:last-child{border-bottom:none; padding-bottom:2px;}
+  .step .num{flex:none; width:27px; height:27px; border-radius:50%; background:var(--hair); color:var(--muted); display:flex; align-items:center; justify-content:center; font-weight:800; font-size:12px;}
+  .step.power .num{background:linear-gradient(135deg,var(--power),#FF9F0A); color:#1C1C1E;}
+  .step .body{flex:1; min-width:0;}
+  .step .name{font-weight:800; font-size:13.5px;}
+  .step .name .badge{display:inline-block; margin-left:5px; font-size:9px; font-weight:800; color:#1C1C1E; background:linear-gradient(135deg,var(--power),#FF9F0A); padding:2px 7px; border-radius:999px; vertical-align:middle;}
+  .step .cue{color:var(--muted); font-size:11px; font-weight:600; margin-top:1px; line-height:1.35;}
+  .step .sxr{flex:none; font-weight:800; font-size:11.5px; background:var(--hair); border-radius:999px; padding:6px 10px; white-space:nowrap; font-variant-numeric:tabular-nums;}
+
+  .cardio-card{background:var(--bg); border-radius:16px; padding:12px 14px; margin-bottom:10px;}
+  .cardio-card h4{font-size:12px; margin:0 0 8px; font-weight:800; display:flex; align-items:center; gap:7px;}
+  .cardio-card h4 .swatch{width:9px; height:9px; border-radius:50%;}
+  .cardio-card ul{margin:0; padding-left:0; list-style:none; font-size:11.5px; color:var(--muted); font-weight:600; line-height:1.55;}
+  .cardio-card li{padding-left:14px; position:relative; margin-bottom:5px;}
+  .cardio-card li:last-child{margin-bottom:0;}
+  .cardio-card li::before{content:""; position:absolute; left:0; top:6px; width:4.5px; height:4.5px; border-radius:50%; background:var(--muted);}
+  .cardio-card li b{color:var(--ink);}
+
+  /* ============ guide ============ */
+  details.gsec{background:var(--card); border-radius:18px; box-shadow:var(--shadow); margin-bottom:12px; overflow:hidden;}
+  details.gsec summary{list-style:none; padding:14px 16px; display:flex; align-items:center; gap:10px; font-weight:800; font-size:13.5px;}
+  details.gsec summary::-webkit-details-marker{display:none;}
+  details.gsec summary .ic{font-size:16px; flex:none;}
+  details.gsec summary .chev{margin-left:auto; color:var(--muted); font-size:12px; transition:transform .16s ease;}
+  details.gsec[open] summary .chev{transform:rotate(90deg);}
+  .gbody{padding:0 16px 15px; font-size:12.5px; line-height:1.6; color:var(--ink);}
+  .gbody p{margin:0 0 9px;}
+  .gbody p:last-child{margin-bottom:0;}
+  .gbody ul, .gbody ol{margin:0 0 9px; padding-left:19px;}
+  .gbody li{margin-bottom:5px;}
+  .gbody .mini{color:var(--muted); font-size:11.5px;}
+  .gtable{width:100%; border-collapse:collapse; font-size:12px;}
+  .gtable td{padding:7px 4px; border-bottom:1px solid var(--hair);}
+  .gtable tr:last-child td{border-bottom:none; font-weight:800;}
+  .gtable td:last-child{text-align:right; font-variant-numeric:tabular-nums; white-space:nowrap; padding-left:10px;}
+
+  /* ============ nav: bottom bar (mobile) ============ */
+  .nav{
+    display:flex; background:var(--navbg);
+    backdrop-filter:blur(20px); -webkit-backdrop-filter:blur(20px);
+    border-top:1px solid var(--hair);
+    padding:8px 8px calc(8px + env(safe-area-inset-bottom, 6px));
+  }
+  .nav .brand, .nav .navfoot{display:none;}
+  .tab{
+    flex:1; display:flex; flex-direction:column; align-items:center; gap:2px;
+    color:var(--muted); font-size:10px; font-weight:700; background:none; border:none; padding:4px 0;
+  }
+  .tab.active{color:var(--lift1);}
+  .tab .ic{width:26px; height:26px; border-radius:9px; display:flex; align-items:center; justify-content:center; font-size:14px;}
+  .tab.active .ic{background:linear-gradient(135deg,var(--lift1),var(--lift2)); color:#fff;}
+
+  .toast{
+    position:fixed; left:50%; bottom:86px; transform:translateX(-50%) translateY(10px);
+    background:var(--ink); color:var(--bg); font-size:12.5px; font-weight:700;
+    padding:10px 16px; border-radius:999px; box-shadow:var(--shadow-lg);
+    opacity:0; pointer-events:none; transition:opacity .2s ease, transform .2s ease; z-index:50; max-width:80vw; text-align:center;
+  }
+  .toast.show{opacity:1; transform:translateX(-50%) translateY(0);}
+
+  /* ============ tablet: roomier ============ */
+  @media (min-width:600px){
+    .view{padding:6px 26px 34px;}
+    .topbar{padding:20px 26px 8px;}
+    .banner, .daystrip{margin-left:26px; margin-right:26px;}
+    .daystrip{padding-left:0; padding-right:0;}
+    .daychip{min-width:46px;}
+  }
+
+  /* ============ laptop / desktop: sidebar + columns ============ */
+  @media (min-width:900px){
+    body{padding:0;}
+    .app{
+      max-width:1180px; margin:0 auto;
+      display:grid; grid-template-columns:236px 1fr; grid-template-rows:100%;
+      box-shadow:var(--shadow-lg);
+    }
+    .nav{
+      order:0; grid-column:1; flex-direction:column; align-items:stretch; gap:3px;
+      border-top:none; border-right:1px solid var(--hair);
+      padding:26px 14px; background:transparent; backdrop-filter:none;
+      overflow-y:auto;
+    }
+    .nav .brand{
+      display:block; padding:0 10px 22px;
+    }
+    .nav .brand .mark{
+      width:40px; height:40px; border-radius:13px; margin-bottom:11px;
+      background:linear-gradient(135deg,var(--lift1),var(--lift2));
+      display:flex; align-items:center; justify-content:center; font-size:19px;
+      box-shadow:0 6px 16px rgba(255,59,92,0.3);
+    }
+    .nav .brand .t{font-size:15px; font-weight:800; letter-spacing:-0.015em; line-height:1.25;}
+    .nav .brand .s{font-size:11px; font-weight:700; color:var(--muted); margin-top:3px; font-variant-numeric:tabular-nums;}
+    .tab{
+      flex:none; flex-direction:row; justify-content:flex-start; gap:11px;
+      padding:10px 11px; border-radius:13px; font-size:13.5px; font-weight:700;
+    }
+    .tab.active{background:var(--card); color:var(--ink); box-shadow:var(--shadow);}
+    .tab .ic{width:28px; height:28px; font-size:15px;}
+    .nav .navfoot{display:block; margin-top:auto; padding:16px 10px 0;}
+    .nav .navfoot .lbl{font-size:10px; font-weight:800; color:var(--muted); text-transform:uppercase; letter-spacing:0.07em; margin-bottom:7px;}
+    .nav .navfoot .big{font-size:12.5px; font-weight:700; color:var(--muted); line-height:1.45;}
+    .nav .navfoot .big b{color:var(--ink);}
+
+    .main{order:1; grid-column:2; min-width:0;}
+    .topbar{padding:26px 30px 10px;}
+    .topbar h1{font-size:30px;}
+    .banner, .daystrip{margin-left:30px; margin-right:30px;}
+    .view{padding:6px 30px 36px;}
+    .cols{grid-template-columns:1fr 1fr; gap:0 16px; align-items:start;}
+    .cols.wide-left{grid-template-columns:1.25fr 1fr;}
+    .daychip{min-width:50px; padding:9px 6px 8px;}
+    .stat-strip{gap:14px;}
+    .stat .v{font-size:26px;}
+  }
+
+  @media (min-width:1180px){
+    .app{border-radius:0;}
+  }
+
+  @media (prefers-reduced-motion: reduce){
+    *{transition:none !important; animation:none !important; scroll-behavior:auto !important;}
+  }
+</style>
+
+<div class="app">
+
+  <nav class="nav" id="nav">
+    <div class="brand">
+      <div class="mark">💪</div>
+      <div class="t">20-Day Challenge</div>
+      <div class="s">Aug 2 – 21, 2026</div>
+    </div>
+    <button class="tab active" data-tab="today"><span class="ic">✅</span>Today</button>
+    <button class="tab" data-tab="workout"><span class="ic">🏋️</span>Workout</button>
+    <button class="tab" data-tab="progress"><span class="ic">📈</span>Progress</button>
+    <button class="tab" data-tab="guide"><span class="ic">📖</span>Guide</button>
+    <div class="navfoot">
+      <div class="lbl">Where you are</div>
+      <div class="big" id="navSummary"></div>
+    </div>
+  </nav>
+
+  <div class="main">
+    <header class="topbar" id="topbar"></header>
+    <div class="banner" id="statusBanner" style="display:none;"></div>
+    <nav class="daystrip" id="daystrip" aria-label="Challenge days"></nav>
+
+    <div class="views" id="views">
+
+      <section class="view active" id="view-today">
+        <div class="cols wide-left">
+          <div>
+            <div class="card" id="todayHeaderCard"></div>
+            <div class="card" id="checklistCard"></div>
+          </div>
+          <div>
+            <div class="card" id="scheduleCard"></div>
+            <div class="card" id="todaySessionCard"></div>
+          </div>
+        </div>
+      </section>
+
+      <section class="view" id="view-workout">
+        <div class="cols">
+          <div>
+            <div class="card" id="workoutTodayCard"></div>
+            <div class="weight-guide">
+              <h3>Weight Guide</h3>
+              <p>8–12 reps per set — last 2–3 genuinely hard, form stays clean.</p>
+              <p>Can't hit 8 clean? Drop the weight. 12 feels easy? Go up.</p>
+              <div class="pill-row">
+                <div class="pill">Press / raises · <b>10–15 lb</b></div>
+                <div class="pill">Squats / rows / DL · <b>20–25 lb</b></div>
+                <div class="pill">Once easy · <b>30 lb</b></div>
+              </div>
+            </div>
+
+            <div class="card">
+              <h3>Lift Day A <span class="tag lift">Day 1 · 8 · 15</span></h3>
+              <div class="note">Warm up 5 min — light movement + dynamic stretches before step 1.</div>
+              <div class="step"><div class="num">1</div><div class="body"><div class="name">Goblet squat</div><div class="cue">Dumbbell at chest, sit back and down.</div></div><div class="sxr">3×10-12</div></div>
+              <div class="step"><div class="num">2</div><div class="body"><div class="name">Push-ups</div><div class="cue">Straight line, full range.</div></div><div class="sxr">3×max</div></div>
+              <div class="step"><div class="num">3</div><div class="body"><div class="name">Single-arm DB row</div><div class="cue">Flat back, pull to hip.</div></div><div class="sxr">3×10-12</div></div>
+              <div class="step"><div class="num">4</div><div class="body"><div class="name">DB shoulder press</div><div class="cue">Straight overhead, no arching.</div></div><div class="sxr">3×10-12</div></div>
+              <div class="step"><div class="num">5</div><div class="body"><div class="name">DB Romanian deadlift</div><div class="cue">Soft knees, hinge at hips.</div></div><div class="sxr">3×10-12</div></div>
+              <div class="step power"><div class="num">6</div><div class="body"><div class="name">Box jumps<span class="badge">POWER</span></div><div class="cue">1m block, full recovery between sets.</div></div><div class="sxr">3×5</div></div>
+              <div class="step"><div class="num">7</div><div class="body"><div class="name">Plank</div><div class="cue">Shoulders to heels, straight line.</div></div><div class="sxr">3×30-45s</div></div>
+              <div class="step"><div class="num">8</div><div class="body"><div class="name">Lying leg raises</div><div class="cue">Slow, back stays flat.</div></div><div class="sxr">3×12</div></div>
+            </div>
+          </div>
+
+          <div>
+            <div class="card">
+              <h3>Lift Day B <span class="tag lift">Day 5 · 12 · 19</span></h3>
+              <div class="note">Same warm-up. Push weight or reps past Lift Day A.</div>
+              <div class="step"><div class="num">1</div><div class="body"><div class="name">Bulgarian split squat</div><div class="cue">Rear foot elevated, drop straight down.</div></div><div class="sxr">3×10/leg</div></div>
+              <div class="step"><div class="num">2</div><div class="body"><div class="name">Bent-over row</div><div class="cue">Hinge forward, row to ribs.</div></div><div class="sxr">3×10-12</div></div>
+              <div class="step"><div class="num">3</div><div class="body"><div class="name">Incline / decline push-ups</div><div class="cue">Hands or feet elevated.</div></div><div class="sxr">3×max</div></div>
+              <div class="step"><div class="num">4</div><div class="body"><div class="name">Lateral + front raises</div><div class="cue">Light, controlled, no swing.</div></div><div class="sxr">3×12 ea</div></div>
+              <div class="step"><div class="num">5</div><div class="body"><div class="name">Single-leg RDL</div><div class="cue">One dumbbell, balance-focused.</div></div><div class="sxr">3×10/leg</div></div>
+              <div class="step power"><div class="num">6</div><div class="body"><div class="name">Stair sprints<span class="badge">POWER</span></div><div class="cue">Walk back down for full recovery.</div></div><div class="sxr">5×20-30</div></div>
+              <div class="step"><div class="num">7</div><div class="body"><div class="name">Side plank</div><div class="cue">Stack feet, hips level.</div></div><div class="sxr">3×30s/side</div></div>
+              <div class="step"><div class="num">8</div><div class="body"><div class="name">Bicycle crunches</div><div class="cue">Slow, elbow to opposite knee.</div></div><div class="sxr">3×15</div></div>
+            </div>
+
+            <div class="card">
+              <h3>Cardio Routes <span class="tag cardio">Days 2 · 3 · 6</span></h3>
+              <div class="note">All routes start and end at <b>3446 Dundas St</b> — distances below are door-to-door.</div>
+              <div class="cardio-card">
+                <h4><span class="swatch" style="background:var(--cardio1)"></span>Bike — 20+ km</h4>
+                <ul>
+                  <li><b>Trans Canada Trail</b> out-and-back — ~26-27 km — flat, the easy day (Day 2)</li>
+                  <li><b>Burnaby Mountain</b> fire roads — ~22-23 km — real climbing</li>
+                  <li><b>Seymour Demonstration Forest</b> — ~33 km — the biggest day</li>
+                </ul>
+              </div>
+              <div class="cardio-card">
+                <h4><span class="swatch" style="background:var(--cardio2)"></span>Run — 5+ km</h4>
+                <ul>
+                  <li><b>Trans Canada Trail</b> out-and-back — ~5 km, starts at your door</li>
+                  <li><b>Empire Fields track</b> — ~0.3 km away, 580m laps or 8×400m repeats</li>
+                  <li><b>Velodrome Trail</b> stairs — ~6.5 km each way, save for a Day 6</li>
+                  <li><b>Burnaby Lake</b> loop — ~8.3 km each way, save for a Day 6</li>
+                </ul>
+              </div>
+              <div class="note">Day 3 adds light upper-body work after the run — a few easy sets, nothing heavy. Legs already did the work.</div>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <section class="view" id="view-progress">
+        <div class="stat-strip">
+          <div class="stat fire"><div class="v" id="statStreak">0</div><div class="k">Streak</div></div>
+          <div class="stat"><div class="v" id="statDone">0/20</div><div class="k">Full days</div></div>
+          <div class="stat"><div class="v" id="statAvg">0%</div><div class="k">Avg habits</div></div>
+        </div>
+
+        <div class="cols">
+          <div>
+            <div class="card">
+              <h3>20-Day Overview</h3>
+              <div class="pgrid" id="pgrid"></div>
+              <div class="legend">
+                <span class="sw"><i style="background:var(--track)"></i>nothing logged</span>
+                <span class="sw"><i style="background:linear-gradient(135deg,#FFD60A,#FF9F0A)"></i>partial</span>
+                <span class="sw"><i style="background:linear-gradient(135deg,var(--cardio1),var(--cardio2))"></i>all 7</span>
+                <span class="sw"><i style="border:1.5px dashed var(--hair)"></i>upcoming</span>
+              </div>
+            </div>
+
+            <div class="card">
+              <h3>Habit Breakdown <span class="tiny">since Day 1</span></h3>
+              <div id="habitBreakdown"></div>
+            </div>
+
+            <div class="card" id="dataCard">
+              <h3>Move Your Data <span class="tiny">phone ⇄ laptop</span></h3>
+              <div class="note">Everything is saved in this browser only. To carry your log to another device, copy the sync code here and paste it there.</div>
+              <textarea class="code" id="syncBox" placeholder="Your sync code appears here — or paste one in and press Restore." spellcheck="false"></textarea>
+              <div class="btn-row">
+                <button class="btn primary small" id="btnCopyCode">Copy sync code</button>
+                <button class="btn small" id="btnRestoreCode">Restore from code</button>
+                <button class="btn ghost small" id="btnDownload">Download backup</button>
+                <label class="btn ghost small" style="display:inline-flex;">Load file<input type="file" accept="application/json,.json" id="fileInput" style="display:none;"></label>
+              </div>
+              <div class="btn-row">
+                <button class="btn danger small" id="btnReset">Erase all data</button>
+              </div>
+              <div class="note" style="margin-top:12px;">The sync code carries checkmarks, notes, measurements and reflections. Progress photos are too large for a code — use <b>Download backup</b> to move those.</div>
+            </div>
+          </div>
+
+          <div>
+            <div class="card" id="milestoneCard"></div>
+
+            <div class="card">
+              <h3>Reflection <span class="tiny">Aug 22 wrap-up</span></h3>
+              <div class="qlabel">Which habit was easiest to keep up?</div>
+              <textarea class="reflect" id="refEasy" placeholder="Type here…"></textarea>
+              <div class="qlabel">Which was hardest, and why?</div>
+              <textarea class="reflect" id="refHard" placeholder="Type here…"></textarea>
+              <div class="qlabel">Which ones do you want to keep going after Aug 22?</div>
+              <textarea class="reflect" id="refKeep" placeholder="Type here…"></textarea>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <section class="view" id="view-guide">
+        <div class="cols">
+          <div>
+            <details class="gsec" open>
+              <summary><span class="ic">🕧</span>Ideal Daily Schedule<span class="chev">▸</span></summary>
+              <div class="gbody">
+                <p>Wake at <b>6:30 AM every day</b> — that's the anchor. A fixed wake time matters more than which hour you pick. Bedtime <b>9:30 PM</b>, nine hours back.</p>
+                <div class="timeline">
+                  <div class="tl-item"><div class="t">6:30 – 6:45 AM</div><div class="d">Up, water, and 10–15 min outside in natural light. The first hour after waking is when light resets the circadian clock — this one habit does more for sleep quality than almost anything else here. Quick face rinse, moisturizer, sunscreen.</div></div>
+                  <div class="tl-item"><div class="t">6:45 – 7:15 AM</div><div class="d">Breakfast, protein-forward. Lighter on cardio days, fuller on lift days.</div></div>
+                  <div class="tl-item"><div class="t">7:30 – 9:00 AM</div><div class="d"><b>Cardio days:</b> train now — beats the August heat and rides the natural morning alertness rise.</div></div>
+                  <div class="tl-item"><div class="t">10:00 – 11:00 AM</div><div class="d"><b>Lift days:</b> train later. Body temperature and the testosterone-to-cortisol ratio both improve through the morning, so late morning is a genuine edge for strength.</div></div>
+                  <div class="tl-item"><div class="t">After training</div><div class="d">Cardio and rest days: cold shower plus a real face cleanse. Lift days: warm shower and cleanse, no cold shower — cold right after lifting blunts the muscle-building signal. Protein and carbs within the hour either way.</div></div>
+                  <div class="tl-item"><div class="t">Evening</div><div class="d">Dinner → read 30–60 min (this is the screen-free wind-down) → PM face routine 30–45 min before bed → journal 5–10 min → screens off → room at 65°F → 9:30 PM lights out.</div></div>
+                </div>
+                <p class="mini" style="margin-top:10px;">Wash workout clothes after each use and change the pillowcase weekly — small things that matter at this sweat volume.</p>
+              </div>
+            </details>
+
+            <details class="gsec">
+              <summary><span class="ic">🔁</span>The 7-Day Cycle<span class="chev">▸</span></summary>
+              <div class="gbody">
+                <p>Built so each day sets up the next: heavy lifting is never back-to-back, leg-heavy cardio never stacks on leg-heavy lifting, and the long cardio day lands when you're freshest. Repeat roughly three times across Aug 2–21.</p>
+                <table class="gtable">
+                  <tr><td><b>Day 1</b> — Heavy full-body lift</td><td>fully recovered</td></tr>
+                  <tr><td><b>Day 2</b> — Easy bike, 20+ km</td><td>active recovery</td></tr>
+                  <tr><td><b>Day 3</b> — Trail run + upper body</td><td>lower-impact legs</td></tr>
+                  <tr><td><b>Day 4</b> — Rest / active recovery</td><td>before lift #2</td></tr>
+                  <tr><td><b>Day 5</b> — Heavy lift #2</td><td>progressive overload</td></tr>
+                  <tr><td><b>Day 6</b> — Long cardio</td><td>freshest, push distance</td></tr>
+                  <tr><td><b>Day 7</b> — Recover + food prep</td><td>closes the loop</td></tr>
+                </table>
+                <p class="mini" style="margin-top:10px;">Cold showers land on days 2, 4 and 6 of each cycle — never right after the two lift days.</p>
+              </div>
+            </details>
+
+            <details class="gsec">
+              <summary><span class="ic">🍳</span>Nutrition Timing<span class="chev">▸</span></summary>
+              <div class="gbody">
+                <ul>
+                  <li><b>Protein at every meal</b> — eggs, yogurt, chicken, powder. Spreading it beats loading it all at dinner.</li>
+                  <li><b>Post-workout:</b> protein and carbs within an hour or two. A smoothie with banana works well, and it matters most after the two lift days.</li>
+                  <li><b>Long cardio day:</b> extra carbs that day and the evening before — this is when your body needs the most fuel.</li>
+                  <li><b>Rest days:</b> protein stays the same, total calories can drop slightly.</li>
+                  <li><b>Creatine:</b> 3–5g daily. Timing doesn't matter, consistency does. Drink more water than usual — creatine plus heavy sweating raises hydration needs.</li>
+                  <li><b>Protein target:</b> roughly 0.8–1g per pound of bodyweight per day. That's the one number worth actually hitting.</li>
+                  <li><b>Calories:</b> no counting. Eat until satisfied, never skip meals, add a bit extra on the two lift days and the long cardio day.</li>
+                </ul>
+                <p>As a novice lifter you can build muscle and lose fat at the same time — eating around maintenance, protein-forward, with this much daily movement covers both goals without weighing food.</p>
+                <p class="mini">Everyday rule stays no refined carbs and no added sugar. The post-workout smoothie is the one intentional exception, and that's when fast carbs are actually useful.</p>
+              </div>
+            </details>
+          </div>
+
+          <div>
+            <details class="gsec">
+              <summary><span class="ic">🌙</span>Sleep, Optimized<span class="chev">▸</span></summary>
+              <div class="gbody">
+                <ul>
+                  <li><b>Temperature:</b> 60–67°F, with 65°F the sweet spot most sleep researchers point to. A cooler room lets core temperature drop the way deep sleep needs.</li>
+                  <li><b>Sleepwear:</b> light and breathable, or none — it helps the body cool instead of fighting the room.</li>
+                  <li><b>Position:</b> side or back beats stomach for spine alignment. Side sleepers put a pillow between the knees, back sleepers under them. Either way the head pillow keeps the neck level with the spine.</li>
+                  <li><b>Consistent wake time</b> — every day, rest days included — is the single biggest lever, more than bedtime itself.</li>
+                  <li><b>Wind-down:</b> screens off 45–60 min before bed, room cooled ahead of time rather than adjusted after lights-out.</li>
+                </ul>
+              </div>
+            </details>
+
+            <details class="gsec">
+              <summary><span class="ic">🧴</span>Skincare &amp; Acne<span class="chev">▸</span></summary>
+              <div class="gbody">
+                <p><b>Morning:</b> cleanser → oil-free moisturizer (yes, even with oily skin — skipping it makes acne worse) → mineral SPF 30+, non-negotiable given the outdoor training.</p>
+                <p><b>Evening:</b> cleanse, always after sweating → adapalene → moisturizer.</p>
+                <p><b>Phase adapalene in</b> so you don't over-irritate:</p>
+                <ol>
+                  <li>Week 1 — cleanser, moisturizer, SPF only</li>
+                  <li>Week 2 — adapalene every other night</li>
+                  <li>Week 3 — nightly, if skin is tolerating it</li>
+                </ol>
+                <p><b>Body:</b> 4% benzoyl peroxide wash on chest, back and shoulders during the post-training shower. Let it sit 1–2 minutes before rinsing — that contact time is what does the work.</p>
+                <p><b>Hair:</b> gentle sulfate-free shampoo and conditioner every training-day wash. Daily washing is fine here; the risk is a harsh shampoo, not the frequency. On a recovery day a water rinse alone gives the scalp a break.</p>
+                <p class="mini">Give it 6–8 weeks before judging results — longer than this 20-day block. Expect to build the habit and see early improvement, not a full transformation by Aug 21. Painful or cystic breakouts are a case for a dermatologist, not more products.</p>
+              </div>
+            </details>
+
+            <details class="gsec">
+              <summary><span class="ic">💵</span>Starting Budget<span class="chev">▸</span></summary>
+              <div class="gbody">
+                <table class="gtable">
+                  <tr><td>Acne cleanser (benzoyl peroxide or salicylic acid)</td><td>$12–18</td></tr>
+                  <tr><td>Non-comedogenic moisturizer</td><td>$15–20</td></tr>
+                  <tr><td>Sport sunscreen, SPF 30+</td><td>$15–18</td></tr>
+                  <tr><td>Adapalene gel</td><td>$20–25</td></tr>
+                  <tr><td>4% benzoyl peroxide body wash</td><td>$10–12</td></tr>
+                  <tr><td>Sulfate-free shampoo + conditioner</td><td>$8–10</td></tr>
+                  <tr><td>Buffer / mid-challenge replacement</td><td>$10–15</td></tr>
+                  <tr><td>Total</td><td>~$90–118</td></tr>
+                </table>
+                <p class="mini" style="margin-top:10px;">Protein powder is already on hand, so its budget was reallocated above.</p>
+              </div>
+            </details>
+
+            <details class="gsec">
+              <summary><span class="ic">🥣</span>Breakfast Ideas<span class="chev">▸</span></summary>
+              <div class="gbody">
+                <ul>
+                  <li><b>Protein oats</b> — oats cooked in milk, protein powder stirred in once slightly cooled, peanut butter and banana on top.</li>
+                  <li><b>Eggs and toast</b> — three eggs, whole grain toast, avocado or peanut butter.</li>
+                  <li><b>Greek yogurt bowl</b> — yogurt, berries or banana, peanut butter or granola.</li>
+                  <li><b>Protein smoothie</b> — milk, protein powder, frozen banana and berries, a spoon of peanut butter. Best on lift-day mornings or straight after a workout.</li>
+                  <li><b>Overnight oats</b> — oats, milk, yogurt and protein powder in a jar the night before, fruit added in the morning.</li>
+                </ul>
+              </div>
+            </details>
+          </div>
+        </div>
+      </section>
+
+    </div>
+  </div>
+</div>
+
+<div class="toast" id="toast" role="status" aria-live="polite"></div>
+
+<script>
+(function(){
+  "use strict";
+
+  var START_Y = 2026, START_M = 7, START_D = 2; // Aug 2, 2026
+  var START = new Date(START_Y, START_M, START_D);
+  var TOTAL_DAYS = 20;
+  var BONUS = 21;
+  var MILESTONES = [1, 8, 15];
+  var KEY = "ldc-state-v1";
+
+  var DAY_TYPES = {
+    1:{type:"lift",  tag:"Lift",  title:"Lift Day A",             focus:"Heavy full-body lift — weights, calisthenics, box jumps."},
+    2:{type:"cardio",tag:"Cardio",title:"Easy / Moderate Bike",   focus:"20+ km at recovery pace. Blood flow, not a hard push."},
+    3:{type:"cardio",tag:"Cardio",title:"Trail Run + Upper Body", focus:"5+ km run, then light upper-body and core accessory work."},
+    4:{type:"rest",  tag:"Rest",  title:"Rest / Active Recovery", focus:"Walk, stretch, easy stairs. Full recovery before lift #2."},
+    5:{type:"lift",  tag:"Lift",  title:"Lift Day B",             focus:"Heavy full-body lift #2 — progress the weight or reps from Day 1."},
+    6:{type:"cardio",tag:"Cardio",title:"Long Cardio Day",        focus:"The week's biggest push — your longest bike or run."},
+    7:{type:"rest",  tag:"Rest",  title:"Recover + Reflect",      focus:"Light movement only. Look back at the week, prep food ahead."}
+  };
+
+  var ITEMS = [
+    {key:"sleep",    short:"Sleep",    title:"Sleep 9 hours",  hint:"9:30 PM lights out, 6:30 AM up"},
+    {key:"exercise", short:"Exercise", title:"Exercise",        hint:"Bike 20+ km · trail run 5+ km · gym or calisthenics", note:"text"},
+    {key:"steps",    short:"Steps",    title:"15,000+ steps",  hint:""},
+    {key:"eatClean", short:"Eat clean",title:"Eat clean",       hint:"Whole grain, no refined carbs, no added sugar"},
+    {key:"screens",  short:"Screens",  title:"Screens",         hint:"Communication and tasks only — no open scrolling"},
+    {key:"read",     short:"Read",     title:"Read",            hint:"30–60 min, after dinner"},
+    {key:"journal",  short:"Journal",  title:"Journal",         hint:"A few lines, last thing before lights out", note:"area"}
+  ];
+
+  /* ---------- date helpers ---------- */
+  function cyclePos(n){ return ((n - 1) % 7) + 1; }
+  function dayType(n){ return DAY_TYPES[cyclePos(n)]; }
+  function coldShowerDay(n){ var p = cyclePos(n); return p === 2 || p === 4 || p === 6; }
+  function dateForDay(n){ var d = new Date(START); d.setDate(d.getDate() + (n - 1)); return d; }
+  function ymd(d){ return d.getFullYear() + "-" + String(d.getMonth()+1).padStart(2,"0") + "-" + String(d.getDate()).padStart(2,"0"); }
+  function fmtShort(d){ return d.toLocaleDateString(undefined, {weekday:"short", month:"short", day:"numeric"}); }
+  function fmtTiny(d){ return d.toLocaleDateString(undefined, {month:"short", day:"numeric"}); }
+  function currentDayIndex(){
+    var t = new Date(); t.setHours(0,0,0,0);
+    return Math.round((t - START) / 86400000) + 1;
+  }
+
+  /* ---------- state ---------- */
+  var state = load();
+  function load(){
+    try {
+      var raw = localStorage.getItem(KEY);
+      if (raw){
+        var p = JSON.parse(raw);
+        if (p && typeof p === "object"){
+          p.days = p.days || {};
+          p.milestones = p.milestones || {};
+          p.reflection = p.reflection || {easy:"", hard:"", keep:""};
+          return p;
+        }
+      }
+    } catch(e){}
+    return { days:{}, milestones:{}, reflection:{easy:"", hard:"", keep:""} };
+  }
+  function save(){
+    try { localStorage.setItem(KEY, JSON.stringify(state)); }
+    catch(e){ toast("Storage is full — remove a progress photo to free space."); }
+  }
+  function dayState(n){
+    var k = ymd(dateForDay(n));
+    if (!state.days[k]) state.days[k] = {};
+    return state.days[k];
+  }
+  function doneCount(n){
+    var s = dayState(n), c = 0;
+    for (var i = 0; i < ITEMS.length; i++) if (s[ITEMS[i].key]) c++;
+    return c;
+  }
+
+  var selectedDay = (function(){
+    var i = currentDayIndex();
+    if (i < 1) return 1;
+    if (i > TOTAL_DAYS) return BONUS;
+    return i;
+  })();
+
+  /* ---------- toast ---------- */
+  var toastEl = document.getElementById("toast");
+  var toastTimer = null;
+  function toast(msg){
+    toastEl.textContent = msg;
+    toastEl.classList.add("show");
+    clearTimeout(toastTimer);
+    toastTimer = setTimeout(function(){ toastEl.classList.remove("show"); }, 2600);
+  }
+
+  function esc(s){
+    return String(s == null ? "" : s).replace(/[&<>"']/g, function(c){
+      return {"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#39;"}[c];
+    });
+  }
+
+  /* ---------- daily schedule, derived from the day type ---------- */
+  function scheduleFor(n){
+    var info = dayType(n), p = cyclePos(n), out = [];
+    out.push({t:"6:30 – 6:45 AM", d:"Up, water, 10–15 min outside in natural light. Quick rinse, moisturizer, sunscreen."});
+    if (p === 6) out.push({t:"6:45 – 7:15 AM", d:"Breakfast — go bigger on carbs today, this is the day you need the most fuel."});
+    else if (info.type === "lift") out.push({t:"6:45 – 7:15 AM", d:"Breakfast, full and protein-forward — eggs or protein oats."});
+    else out.push({t:"6:45 – 7:15 AM", d:"Breakfast, protein-forward. Lighter is fine on a cardio day."});
+
+    if (info.type === "lift"){
+      out.push({t:"10:00 – 11:00 AM", d:"<b>" + info.title + "</b> — see the Workout tab for the full session.", hi:true});
+      out.push({t:"After training", d:"Warm shower and a real face cleanse. <b>No cold shower today</b> — it would blunt the muscle-building signal. Protein and carbs within the hour."});
+    } else if (info.type === "cardio"){
+      var what = p === 2 ? "Easy bike, 20+ km at recovery pace"
+               : p === 3 ? "Trail run 5+ km, then light upper-body work"
+               : "Your longest ride or run of the week";
+      out.push({t:"7:30 – 9:00 AM", d:"<b>" + what + ".</b> Routes are on the Workout tab.", hi:true});
+      out.push({t:"After training", d:(coldShowerDay(n) ? "Cold shower while still warm from the session, plus a real face cleanse." : "Normal warm shower and face cleanse.") + " Protein and carbs within the hour."});
+    } else {
+      out.push({t:"Whenever it fits", d:"<b>No formal session.</b> An easy walk or stretch — steps still add up through the day.", hi:true});
+      if (coldShowerDay(n)) out.push({t:"Any time", d:"Cold shower today. It doesn't need to follow a workout, since there isn't one."});
+      if (p === 7) out.push({t:"Sometime today", d:"Look back at the week and prep or shop food for the one ahead."});
+    }
+    out.push({t:"Through the day", d:"Protein at every meal. Steps accumulate through errands and normal movement."});
+    out.push({t:"Evening", d:"Dinner → read 30–60 min → PM face routine → journal → screens off → <b>9:30 PM lights out</b>."});
+    return out;
+  }
+
+  /* ---------- render: top ---------- */
+  function renderTop(){
+    var idx = currentDayIndex();
+    var isBonus = selectedDay === BONUS;
+    var d = isBonus ? dateForDay(TOTAL_DAYS + 1) : dateForDay(selectedDay);
+    var cnt = isBonus ? 0 : doneCount(selectedDay);
+    var pct = Math.round((cnt / ITEMS.length) * 100);
+    var ringColor = pct >= 100 ? "var(--cardio1)" : pct > 0 ? "var(--power)" : "var(--track)";
+
+    document.getElementById("topbar").innerHTML =
+      '<div style="min-width:0;">' +
+        '<div class="eyebrow">' + (isBonus ? "Bonus day" : "Day " + selectedDay + " of " + TOTAL_DAYS) + '</div>' +
+        '<h1>' + (isBonus ? "Reflection" : esc(dayType(selectedDay).title)) + '</h1>' +
+        '<p class="sub"><span>' + fmtShort(d) + '</span>' +
+          (selectedDay === idx ? '<span style="color:var(--lift1);font-weight:800;">Today</span>' : '') +
+          (selectedDay !== idx && idx >= 1 && idx <= BONUS ? '<button class="jump" id="btnToday">Go to today</button>' : '') +
+        '</p>' +
+      '</div>' +
+      (isBonus ? '' :
+      '<div class="ring" style="--pct:' + pct + '%;--rc:' + ringColor + ';" title="' + cnt + ' of ' + ITEMS.length + ' habits logged">' +
+        '<div class="inner"><div class="n">' + cnt + '/' + ITEMS.length + '</div><div class="l">habits</div></div>' +
+      '</div>');
+
+    var jump = document.getElementById("btnToday");
+    if (jump) jump.addEventListener("click", function(){ selectedDay = Math.min(Math.max(idx,1), BONUS); renderAll(); });
+
+    var banner = document.getElementById("statusBanner");
+    banner.style.display = "none";
+    if (idx < 1){
+      var away = 1 - idx;
+      banner.style.display = "block";
+      banner.className = "banner";
+      banner.textContent = "Starts in " + away + " day" + (away === 1 ? "" : "s") + ", on " + fmtTiny(START) + ". You're previewing Day 1 — tick things early if you want a head start.";
+    } else if (idx === BONUS){
+      banner.style.display = "block";
+      banner.className = "banner done";
+      banner.textContent = "All 20 days are behind you. Today is the bonus day: light movement, a full night's sleep, and the reflection questions on the Progress tab.";
+    } else if (idx > BONUS){
+      banner.style.display = "block";
+      banner.className = "banner done";
+      banner.textContent = "Challenge complete. Everything you logged is still here — browse any day, or read your reflection on the Progress tab.";
+    }
+
+    var nav = document.getElementById("navSummary");
+    if (idx < 1) nav.innerHTML = "Starts <b>" + fmtTiny(START) + "</b>";
+    else if (idx > TOTAL_DAYS) nav.innerHTML = "<b>All 20 days</b> logged";
+    else nav.innerHTML = "Day <b>" + idx + "</b> of " + TOTAL_DAYS + " · <b>" + (TOTAL_DAYS - idx) + "</b> to go";
+  }
+
+  /* ---------- render: day strip ---------- */
+  function renderStrip(){
+    var idx = currentDayIndex();
+    var el = document.getElementById("daystrip");
+    var html = "";
+    for (var n = 1; n <= TOTAL_DAYS; n++){
+      var full = doneCount(n) === ITEMS.length;
+      html += '<button class="daychip' + (n === selectedDay ? " selected" : "") + (n === idx ? " today" : "") + (full ? " complete" : "") +
+        '" data-day="' + n + '" aria-label="Day ' + n + ', ' + fmtTiny(dateForDay(n)) + '"' + (n === selectedDay ? ' aria-current="true"' : '') +
+        '><span class="num">' + n + '</span><span class="dot"></span></button>';
+    }
+    html += '<button class="daychip' + (selectedDay === BONUS ? " selected" : "") + (idx === BONUS ? " today" : "") +
+      '" data-day="' + BONUS + '" aria-label="Bonus reflection day"><span class="num">★</span><span class="dot"></span></button>';
+    el.innerHTML = html;
+    Array.prototype.forEach.call(el.querySelectorAll(".daychip"), function(c){
+      c.addEventListener("click", function(){
+        selectedDay = parseInt(c.getAttribute("data-day"), 10);
+        renderAll();
+        var sel = el.querySelector(".daychip.selected");
+        if (sel && sel.scrollIntoView) sel.scrollIntoView({block:"nearest", inline:"center", behavior:"smooth"});
+      });
+    });
+    var sel = el.querySelector(".daychip.selected");
+    if (sel) el.scrollLeft = Math.max(0, sel.offsetLeft - el.clientWidth / 2 + sel.clientWidth / 2);
+  }
+
+  /* ---------- render: today ---------- */
+  function renderToday(){
+    var head = document.getElementById("todayHeaderCard");
+    var list = document.getElementById("checklistCard");
+    var sched = document.getElementById("scheduleCard");
+    var sess = document.getElementById("todaySessionCard");
+
+    if (selectedDay === BONUS){
+      head.innerHTML = '<h3>Aug 22 — Bonus Day <span class="tag rest">Reflect</span></h3>' +
+        '<div class="note">Light movement only, a full night\'s sleep, and a look back at the 20 days.</div>';
+      list.innerHTML = '<h3>Nothing to tick today</h3><div class="note">The three reflection questions live on the Progress tab. Answer them while the 20 days are still fresh.</div>';
+      sched.innerHTML = '<h3>What today is for</h3>' +
+        '<div class="timeline">' +
+          '<div class="tl-item"><div class="t">Move gently</div><div class="d">A walk or an easy stretch. Nothing that needs recovering from.</div></div>' +
+          '<div class="tl-item"><div class="t">Sleep in properly</div><div class="d">One full, unhurried night after twenty on a fixed schedule.</div></div>' +
+          '<div class="tl-item hi"><div class="t">Look back</div><div class="d">Read your journal entries end to end, then answer the three questions.</div></div>' +
+        '</div>';
+      sess.innerHTML = '<h3>Keep what worked</h3><div class="note">Whichever habits felt easiest by Day 20 are the ones most likely to stick. Decide which two or three carry forward.</div>';
+      return;
+    }
+
+    var info = dayType(selectedDay);
+    head.innerHTML =
+      '<h3>' + esc(info.title) + ' <span class="tag ' + info.type + '">' + info.tag + '</span></h3>' +
+      '<div class="note">' + esc(info.focus) + '</div>' +
+      (coldShowerDay(selectedDay)
+        ? '<div class="note" style="margin-top:8px;">Cold shower day — one of three this week, kept off the lift days on purpose.</div>'
+        : (info.type === "lift" ? '<div class="note" style="margin-top:8px;">No cold shower after lifting — it would blunt the muscle-building signal from the session.</div>' : ''));
+
+    var s = dayState(selectedDay);
+    var rows = ITEMS.map(function(it){
+      var on = !!s[it.key], extra = "";
+      if (it.note === "text") extra = '<input type="text" data-note="exerciseNote" placeholder="Which one? e.g. bike 26 km, Trans Canada Trail" value="' + esc(s.exerciseNote) + '">';
+      if (it.note === "area") extra = '<textarea data-note="journalNote" placeholder="A few lines about today…">' + esc(s.journalNote) + '</textarea>';
+      return '<div class="check-row' + (on ? " checked" : "") + '" data-row="' + it.key + '">' +
+        '<input type="checkbox" ' + (on ? "checked" : "") + ' data-check="' + it.key + '" aria-label="' + esc(it.title) + '">' +
+        '<div class="label"><div class="title">' + esc(it.title) + '</div>' +
+        (it.hint ? '<div class="hint">' + esc(it.hint) + '</div>' : '') + extra + '</div></div>';
+    }).join("");
+
+    if (coldShowerDay(selectedDay)){
+      rows += '<div class="check-row' + (s.coldShower ? " checked" : "") + '" data-row="coldShower">' +
+        '<input type="checkbox" ' + (s.coldShower ? "checked" : "") + ' data-check="coldShower" aria-label="Cold shower">' +
+        '<div class="label"><div class="title">Cold shower</div><div class="hint">Three a week — cardio and rest days only</div></div></div>';
+    } else {
+      rows += '<div class="check-row na-row"><span style="width:25px;flex:none;"></span>' +
+        '<div class="label"><div class="title">Cold shower <span class="em">— not today</span></div></div></div>';
+    }
+
+    list.innerHTML = '<h3>Daily Checklist <span class="tiny">' + fmtTiny(dateForDay(selectedDay)) + '</span></h3>' + rows;
+
+    Array.prototype.forEach.call(list.querySelectorAll("[data-check]"), function(box){
+      box.addEventListener("change", function(){
+        var k = box.getAttribute("data-check");
+        dayState(selectedDay)[k] = box.checked;
+        save();
+        var row = list.querySelector('[data-row="' + k + '"]');
+        if (row) row.classList.toggle("checked", box.checked);
+        renderTop(); renderStrip(); renderProgress();
+      });
+    });
+    Array.prototype.forEach.call(list.querySelectorAll("[data-note]"), function(f){
+      f.addEventListener("input", function(){
+        dayState(selectedDay)[f.getAttribute("data-note")] = f.value;
+        save();
+      });
+    });
+
+    sched.innerHTML = '<h3>Today\'s Shape <span class="tiny">6:30 AM → 9:30 PM</span></h3><div class="timeline">' +
+      scheduleFor(selectedDay).map(function(x){
+        return '<div class="tl-item' + (x.hi ? " hi" : "") + '"><div class="t">' + x.t + '</div><div class="d">' + x.d + '</div></div>';
+      }).join("") + '</div>';
+
+    if (info.type === "lift"){
+      var isA = cyclePos(selectedDay) === 1;
+      sess.innerHTML = '<h3>' + (isA ? "Lift Day A" : "Lift Day B") + ' <span class="tag lift">Session</span></h3>' +
+        '<div class="note">' + (isA
+          ? "Goblet squat · push-ups · single-arm row · shoulder press · Romanian deadlift · box jumps · plank · leg raises."
+          : "Bulgarian split squat · bent-over row · incline push-ups · lateral and front raises · single-leg RDL · stair sprints · side plank · bicycle crunches.") +
+        '</div><div class="note" style="margin-top:8px;">Sets, reps and form cues are on the Workout tab.</div>';
+    } else if (info.type === "cardio"){
+      sess.innerHTML = '<h3>Route Options <span class="tag cardio">Session</span></h3>' +
+        '<div class="note">' + (cyclePos(selectedDay) === 2
+          ? "Trans Canada Trail out-and-back is the flat one, ~26–27 km door to door. Recovery pace, not a push."
+          : cyclePos(selectedDay) === 3
+          ? "Trans Canada Trail (~5 km from your door) or laps at Empire Fields, 0.3 km away. Light upper-body work after."
+          : "Seymour Demonstration Forest (~33 km), Burnaby Mountain fire roads, or the full Burnaby Lake loop if you'd rather run long.") +
+        '</div><div class="note" style="margin-top:8px;">Full distances and notes are on the Workout tab.</div>';
+    } else {
+      sess.innerHTML = '<h3>Recovery <span class="tag rest">No session</span></h3>' +
+        '<div class="note">Nothing formal today. A walk, some stretching, stairs at an easy pace — enough to keep blood moving and still clear 15,000 steps.</div>';
+    }
+  }
+
+  /* ---------- render: workout header ---------- */
+  function renderWorkoutHead(){
+    var n = selectedDay === BONUS ? TOTAL_DAYS : selectedDay;
+    var info = dayType(n);
+    document.getElementById("workoutTodayCard").innerHTML =
+      '<h3>Day ' + n + ' — ' + esc(info.title) + ' <span class="tag ' + info.type + '">' + info.tag + '</span></h3>' +
+      '<div class="note">' + esc(info.focus) + '</div>';
+  }
+
+  /* ---------- render: progress ---------- */
+  function renderProgress(){
+    var idx = currentDayIndex();
+    var elapsed = Math.max(0, Math.min(TOTAL_DAYS, idx));
+
+    var streakFrom = elapsed;
+    if (elapsed >= 1 && doneCount(elapsed) < ITEMS.length) streakFrom = elapsed - 1;
+    var streak = 0;
+    for (var n = streakFrom; n >= 1; n--){
+      if (doneCount(n) === ITEMS.length) streak++; else break;
+    }
+
+    var full = 0, sum = 0, counts = {};
+    ITEMS.forEach(function(i){ counts[i.key] = 0; });
+    for (var m = 1; m <= elapsed; m++){
+      var c = doneCount(m);
+      if (c === ITEMS.length) full++;
+      sum += c / ITEMS.length;
+      var s = dayState(m);
+      ITEMS.forEach(function(i){ if (s[i.key]) counts[i.key]++; });
+    }
+    var avg = elapsed > 0 ? Math.round((sum / elapsed) * 100) : 0;
+
+    document.getElementById("statStreak").textContent = streak;
+    document.getElementById("statDone").textContent = full + "/" + TOTAL_DAYS;
+    document.getElementById("statAvg").textContent = avg + "%";
+
+    var grid = document.getElementById("pgrid"), html = "";
+    for (var k = 1; k <= TOTAL_DAYS; k++){
+      if (k > elapsed){
+        html += '<button class="pcell future" data-day="' + k + '" aria-label="Day ' + k + ', upcoming">' + k + '</button>';
+        continue;
+      }
+      var cc = doneCount(k), r = cc / ITEMS.length, bg, fg = "";
+      if (r === 0) bg = "var(--track)";
+      else if (r >= 1){ bg = "linear-gradient(135deg,var(--cardio1),var(--cardio2))"; fg = ";color:#fff"; }
+      else { var a = 0.4 + r * 0.5; bg = "linear-gradient(135deg,rgba(255,214,10," + a + "),rgba(255,159,10," + a + "))"; fg = ";color:#3A2A00"; }
+      html += '<button class="pcell' + (k === idx ? " today-mark" : "") + '" data-day="' + k + '" style="background:' + bg + fg +
+        '" title="Day ' + k + " — " + cc + " of " + ITEMS.length + ' habits" aria-label="Day ' + k + ', ' + cc + ' of ' + ITEMS.length + ' habits">' + k + '</button>';
+    }
+    grid.innerHTML = html;
+    Array.prototype.forEach.call(grid.querySelectorAll(".pcell"), function(c){
+      c.addEventListener("click", function(){
+        selectedDay = parseInt(c.getAttribute("data-day"), 10);
+        renderAll();
+        switchTab("today");
+      });
+    });
+
+    document.getElementById("habitBreakdown").innerHTML = ITEMS.map(function(it){
+      var pct = elapsed > 0 ? Math.round((counts[it.key] / elapsed) * 100) : 0;
+      return '<div class="habit-row"><div class="name">' + esc(it.short) + '</div>' +
+        '<div class="bar"><span style="width:' + pct + '%"></span></div><div class="pct">' + pct + '%</div></div>';
+    }).join("");
+
+    renderMilestones();
+  }
+
+  function renderMilestones(){
+    var card = document.getElementById("milestoneCard");
+    var active = document.activeElement;
+    var keep = active && card.contains(active) ? active.getAttribute("data-m") + "|" + active.getAttribute("data-f") : null;
+
+    var html = '<h3>Progress Checks <span class="tiny">Day 1 · 8 · 15</span></h3>' +
+      '<div class="note">A pound of muscle in 20 days is realistic, but scale weight moves with water and food too — measurements and a photo tell you more.</div>';
+
+    MILESTONES.forEach(function(m){
+      if (!state.milestones[m]) state.milestones[m] = {};
+      var ms = state.milestones[m];
+      html += '<div class="ms-block">' +
+        '<div class="ms-head"><span class="d">Day ' + m + '</span><span class="when">' + fmtTiny(dateForDay(m)) + '</span></div>' +
+        '<div class="mrow">' +
+          '<div class="mfield"><label>Waist in</label><input type="number" step="0.1" inputmode="decimal" data-m="' + m + '" data-f="waist" value="' + esc(ms.waist) + '"></div>' +
+          '<div class="mfield"><label>Arm in</label><input type="number" step="0.1" inputmode="decimal" data-m="' + m + '" data-f="arm" value="' + esc(ms.arm) + '"></div>' +
+          '<div class="mfield"><label>Thigh in</label><input type="number" step="0.1" inputmode="decimal" data-m="' + m + '" data-f="thigh" value="' + esc(ms.thigh) + '"></div>' +
+        '</div>' +
+        '<div class="photo-row">' +
+          '<div class="photo-thumb">' + (ms.photo ? '<img src="' + ms.photo + '" alt="Day ' + m + ' progress photo">' : "No photo") + '</div>' +
+          '<label class="btn ghost small" style="display:inline-flex;">' + (ms.photo ? "Replace" : "Add photo") +
+            '<input type="file" accept="image/*" data-photo="' + m + '" style="display:none;"></label>' +
+          (ms.photo ? '<button class="btn ghost small" data-rmphoto="' + m + '">Remove</button>' : '') +
+        '</div></div>';
+    });
+    card.innerHTML = html;
+
+    Array.prototype.forEach.call(card.querySelectorAll("[data-f]"), function(inp){
+      inp.addEventListener("input", function(){
+        state.milestones[inp.getAttribute("data-m")][inp.getAttribute("data-f")] = inp.value;
+        save();
+      });
+    });
+    Array.prototype.forEach.call(card.querySelectorAll("[data-photo]"), function(inp){
+      inp.addEventListener("change", function(){
+        var f = inp.files && inp.files[0];
+        if (!f) return;
+        shrink(f, 520, function(url){
+          state.milestones[inp.getAttribute("data-photo")].photo = url;
+          save(); renderMilestones(); toast("Photo saved.");
+        });
+      });
+    });
+    Array.prototype.forEach.call(card.querySelectorAll("[data-rmphoto]"), function(b){
+      b.addEventListener("click", function(){
+        delete state.milestones[b.getAttribute("data-rmphoto")].photo;
+        save(); renderMilestones();
+      });
+    });
+
+    if (keep){
+      var again = card.querySelector('[data-m="' + keep.split("|")[0] + '"][data-f="' + keep.split("|")[1] + '"]');
+      if (again) again.focus();
+    }
+  }
+
+  function shrink(file, maxW, cb){
+    var r = new FileReader();
+    r.onload = function(e){
+      var img = new Image();
+      img.onload = function(){
+        var sc = Math.min(1, maxW / img.width);
+        var w = Math.round(img.width * sc), h = Math.round(img.height * sc);
+        var cv = document.createElement("canvas");
+        cv.width = w; cv.height = h;
+        cv.getContext("2d").drawImage(img, 0, 0, w, h);
+        cb(cv.toDataURL("image/jpeg", 0.8));
+      };
+      img.onerror = function(){ toast("That file couldn't be read as an image."); };
+      img.src = e.target.result;
+    };
+    r.readAsDataURL(file);
+  }
+
+  /* ---------- reflection ---------- */
+  ["easy","hard","keep"].forEach(function(k){
+    var el = document.getElementById("ref" + k.charAt(0).toUpperCase() + k.slice(1));
+    el.value = state.reflection[k] || "";
+    el.addEventListener("input", function(){ state.reflection[k] = el.value; save(); });
+  });
+  function syncReflection(){
+    document.getElementById("refEasy").value = state.reflection.easy || "";
+    document.getElementById("refHard").value = state.reflection.hard || "";
+    document.getElementById("refKeep").value = state.reflection.keep || "";
+  }
+
+  /* ---------- data portability ---------- */
+  function toB64(obj){
+    var json = JSON.stringify(obj);
+    var bytes = new TextEncoder().encode(json);
+    var bin = "";
+    for (var i = 0; i < bytes.length; i++) bin += String.fromCharCode(bytes[i]);
+    return btoa(bin);
+  }
+  function fromB64(code){
+    var bin = atob(code.replace(/\s+/g, ""));
+    var bytes = new Uint8Array(bin.length);
+    for (var i = 0; i < bin.length; i++) bytes[i] = bin.charCodeAt(i);
+    return JSON.parse(new TextDecoder().decode(bytes));
+  }
+  function slimState(){
+    var copy = JSON.parse(JSON.stringify(state));
+    Object.keys(copy.milestones || {}).forEach(function(k){ delete copy.milestones[k].photo; });
+    return copy;
+  }
+  function applyImported(obj){
+    if (!obj || typeof obj !== "object" || !obj.days) { toast("That doesn't look like a challenge backup."); return false; }
+    state = {
+      days: obj.days || {},
+      milestones: obj.milestones || {},
+      reflection: obj.reflection || {easy:"", hard:"", keep:""}
+    };
+    save(); syncReflection(); renderAll();
+    return true;
+  }
+
+  var syncBox = document.getElementById("syncBox");
+  document.getElementById("btnCopyCode").addEventListener("click", function(){
+    var code = toB64(slimState());
+    syncBox.value = code;
+    syncBox.select();
+    if (navigator.clipboard && navigator.clipboard.writeText){
+      navigator.clipboard.writeText(code).then(
+        function(){ toast("Sync code copied — paste it on your other device."); },
+        function(){ toast("Select the code above and copy it manually."); }
+      );
+    } else {
+      try { document.execCommand("copy"); toast("Sync code copied."); }
+      catch(e){ toast("Select the code above and copy it manually."); }
+    }
+  });
+  document.getElementById("btnRestoreCode").addEventListener("click", function(){
+    var v = syncBox.value.trim();
+    if (!v){ toast("Paste a sync code into the box first."); return; }
+    var obj;
+    try { obj = fromB64(v); } catch(e){ toast("That code is incomplete or damaged."); return; }
+    if (applyImported(obj)) toast("Restored from sync code.");
+  });
+  document.getElementById("btnDownload").addEventListener("click", function(){
+    try {
+      var blob = new Blob([JSON.stringify(state, null, 2)], {type:"application/json"});
+      var a = document.createElement("a");
+      a.href = URL.createObjectURL(blob);
+      a.download = "20-day-challenge-backup.json";
+      document.body.appendChild(a); a.click();
+      setTimeout(function(){ URL.revokeObjectURL(a.href); a.remove(); }, 1000);
+      toast("Backup downloaded.");
+    } catch(e){ toast("Download blocked here — use the sync code instead."); }
+  });
+  document.getElementById("fileInput").addEventListener("change", function(){
+    var f = this.files && this.files[0];
+    if (!f) return;
+    var r = new FileReader();
+    r.onload = function(e){
+      var obj;
+      try { obj = JSON.parse(e.target.result); } catch(err){ toast("That file isn't valid JSON."); return; }
+      if (applyImported(obj)) toast("Backup loaded.");
+    };
+    r.readAsText(f);
+    this.value = "";
+  });
+  document.getElementById("btnReset").addEventListener("click", function(){
+    if (!confirm("Erase every checkmark, note, measurement and photo? This can't be undone.")) return;
+    state = { days:{}, milestones:{}, reflection:{easy:"", hard:"", keep:""} };
+    save(); syncReflection(); renderAll();
+    toast("All data erased.");
+  });
+
+  /* ---------- tabs ---------- */
+  function switchTab(name){
+    Array.prototype.forEach.call(document.querySelectorAll(".view"), function(v){ v.classList.remove("active"); });
+    Array.prototype.forEach.call(document.querySelectorAll(".tab"), function(t){
+      var on = t.getAttribute("data-tab") === name;
+      t.classList.toggle("active", on);
+      t.setAttribute("aria-current", on ? "page" : "false");
+    });
+    document.getElementById("view-" + name).classList.add("active");
+    document.getElementById("views").scrollTop = 0;
+    document.getElementById("daystrip").style.display = (name === "guide") ? "none" : "flex";
+  }
+  Array.prototype.forEach.call(document.querySelectorAll(".tab"), function(t){
+    t.addEventListener("click", function(){ switchTab(t.getAttribute("data-tab")); });
+  });
+
+  /* ---------- keyboard: arrow between days ---------- */
+  document.addEventListener("keydown", function(e){
+    if (e.target.matches("input, textarea")) return;
+    if (e.key === "ArrowRight" && selectedDay < BONUS){ selectedDay++; renderAll(); }
+    else if (e.key === "ArrowLeft" && selectedDay > 1){ selectedDay--; renderAll(); }
+  });
+
+  function renderAll(){
+    renderTop();
+    renderStrip();
+    renderToday();
+    renderWorkoutHead();
+    renderProgress();
+  }
+
+  renderAll();
+  switchTab("today");
+})();
+</script>
