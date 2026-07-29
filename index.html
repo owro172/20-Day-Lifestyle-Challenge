@@ -398,13 +398,45 @@
   .cardio-card li b{color:var(--ink);}
 
   /* Route ladders — ordered by distance, so the rung label leads each row. */
-  .route{display:flex; gap:11px; padding:8px 0; border-bottom:1px solid var(--hair);}
-  .route:first-of-type{padding-top:2px;}
-  .route:last-child{border-bottom:none; padding-bottom:2px;}
+  details.route{border-bottom:1px solid var(--hair);}
+  details.route:last-of-type{border-bottom:none;}
+  details.route > summary{
+    display:flex; gap:11px; padding:9px 0; cursor:pointer; list-style:none;
+  }
+  details.route > summary::-webkit-details-marker{display:none;}
+  details.route > summary:hover .rname{color:var(--rest2);}
   .route .dist{
     flex:none; min-width:54px; font-size:12px; font-weight:900;
     font-variant-numeric:tabular-nums; letter-spacing:-0.02em; padding-top:1px;
   }
+  .maplink{
+    display:inline-flex; align-items:center; gap:4px; margin-top:6px;
+    font-size:10px; font-weight:800; letter-spacing:0.05em; text-transform:uppercase;
+    color:var(--rest2);
+  }
+  .maplink .ico{width:11px; height:11px; stroke-width:2.6; transition:transform .18s ease;}
+  details.route[open] .maplink .ico{transform:rotate(90deg);}
+  .mappanel{padding:0 0 12px;}
+  .mapwrap{
+    position:relative; border-radius:14px; overflow:hidden; border:1px solid var(--hair);
+    background:var(--bg); line-height:0; height:230px;
+  }
+  .mapframe{
+    position:relative; z-index:1; width:100%; height:100%; border:0; display:block;
+    opacity:0; transition:opacity .3s ease;
+  }
+  .mapframe.ready{opacity:1;}
+  .mapfallback{
+    position:absolute; inset:0; z-index:0;
+    display:flex; flex-direction:column; align-items:center; justify-content:center; gap:7px;
+    padding:16px; text-align:center; line-height:1.45;
+    font-size:11px; font-weight:700; color:var(--muted);
+  }
+  .mapfallback .ico{width:20px; height:20px; opacity:0.6;}
+  .mapnote{font-size:10.5px; font-weight:600; color:var(--muted); margin:9px 0 0; line-height:1.5;}
+  .mapnote b{color:var(--ink);}
+  .mapbtns{display:flex; gap:8px; flex-wrap:wrap; margin-top:9px;}
+  a.btn{text-decoration:none;}
   .cardio-card.run .route .dist{color:var(--cardio2);}
   .cardio-card.bike .route .dist{color:var(--cardio1);}
   .route .body{flex:1; min-width:0; display:block;}
@@ -623,6 +655,11 @@
     <path d="M12.6 16.4l4 4 4-4"/>
   </symbol>
 
+  <symbol id="i-pin" viewBox="0 0 24 24">
+    <path d="M19 10.2c0 5.2-7 11.4-7 11.4s-7-6.2-7-11.4a7 7 0 0 1 14 0z"/>
+    <circle cx="12" cy="10" r="2.6"/>
+  </symbol>
+
   <symbol id="i-flame" viewBox="0 0 24 24">
     <path d="M12 2.6c.7 3.3 2.5 4.6 4 6.2 1.5 1.6 2.4 3.3 2.4 5.5a6.4 6.4 0 0 1-12.8 0c0-2.5 1.2-4.2 2.5-5.5.3 1 .9 1.8 1.8 2.2.4-3.4 1-5.7 2.1-8.4z"/>
   </symbol>
@@ -762,61 +799,144 @@
 
               <div class="cardio-card run">
                 <h4><svg class="ico run"><use href="#i-run"/></svg>Run — the 5K to 10K ladder</h4>
-                <div class="route">
-                  <span class="dist">~5K</span>
-                  <span class="body"><span class="rname">Trans Canada Trail out-and-back</span>
-                  <span class="rnote">1.3 km to the entrance, 1.2 km in, turn around. Flat and shaded — the easiest rung.</span></span>
-                </div>
-                <div class="route">
-                  <span class="dist">~6K</span>
-                  <span class="body"><span class="rname">Empire Fields track</span>
-                  <span class="rnote">0.3 km away, 580m per lap. Adjust the lap count to land anywhere in range, or run 8×400m repeats.</span></span>
-                </div>
-                <div class="route">
-                  <span class="dist">~8K</span>
-                  <span class="body"><span class="rname">New Brighton Park loop</span>
-                  <span class="rnote">1 km out on the Cassiar Bikeway, the New Brighton and Hastings Park loop (~5 km of waterfront, salt marsh and PNE gardens), 1 km home.</span></span>
-                </div>
-                <div class="route">
-                  <span class="dist">~10K</span>
-                  <span class="body"><span class="rname">New Brighton + Hastings Park Sanctuary</span>
-                  <span class="rnote">The same loop, continuing along the Hastings Park perimeter and Sanctuary paths before turning back. More scenery, still door-to-door.</span></span>
-                </div>
+                <details class="route">
+                  <summary>
+                    <span class="dist">~5K</span>
+                    <span class="body">
+                      <span class="rname">Trans Canada Trail out-and-back</span>
+                      <span class="rnote">1.3 km to the entrance, 1.2 km in, turn around. Flat and shaded — the easiest rung.</span>
+                      <span class="maplink"><svg class="ico"><use href="#i-chevron"/></svg>Map</span>
+                    </span>
+                  </summary>
+                  <div class="mappanel"
+                       data-place="Trans Canada Trail, Burnaby, BC"
+                       data-mode="walking"></div>
+                </details>
+                <details class="route">
+                  <summary>
+                    <span class="dist">~6K</span>
+                    <span class="body">
+                      <span class="rname">Empire Fields track</span>
+                      <span class="rnote">0.3 km away, 580m per lap. Adjust the lap count to land anywhere in range, or run 8×400m repeats.</span>
+                      <span class="maplink"><svg class="ico"><use href="#i-chevron"/></svg>Map</span>
+                    </span>
+                  </summary>
+                  <div class="mappanel"
+                       data-place="Empire Fields, Vancouver, BC"
+                       data-mode="walking"></div>
+                </details>
+                <details class="route">
+                  <summary>
+                    <span class="dist">~8K</span>
+                    <span class="body">
+                      <span class="rname">New Brighton Park loop</span>
+                      <span class="rnote">1 km out on the Cassiar Bikeway, the New Brighton and Hastings Park loop (~5 km of waterfront, salt marsh and PNE gardens), 1 km home.</span>
+                      <span class="maplink"><svg class="ico"><use href="#i-chevron"/></svg>Map</span>
+                    </span>
+                  </summary>
+                  <div class="mappanel"
+                       data-place="New Brighton Park, Vancouver, BC"
+                       data-mode="walking"></div>
+                </details>
+                <details class="route">
+                  <summary>
+                    <span class="dist">~10K</span>
+                    <span class="body">
+                      <span class="rname">New Brighton + Hastings Park Sanctuary</span>
+                      <span class="rnote">The same loop, continuing along the Hastings Park perimeter and Sanctuary paths before turning back. More scenery, still door-to-door.</span>
+                      <span class="maplink"><svg class="ico"><use href="#i-chevron"/></svg>Map</span>
+                    </span>
+                  </summary>
+                  <div class="mappanel"
+                       data-place="Hastings Park, Vancouver, BC"
+                       data-mode="walking"></div>
+                </details>
                 <div class="footnote">The <b>Velodrome Trail</b> stairs and <b>Burnaby Lake</b> are both 6.5–8+ km away just to reach — an occasional special trip, not part of this rotation.</div>
               </div>
 
               <div class="cardio-card bike">
                 <h4><svg class="ico bike"><use href="#i-bike"/></svg>Bike — the 15K to 100K ladder</h4>
-                <div class="route">
-                  <span class="dist">~18K</span>
-                  <span class="body"><span class="rname">Trans Canada Trail, short</span>
-                  <span class="rnote">1.3 km to the entrance, a shorter stretch of trail, turn around. The easy day.</span></span>
-                </div>
-                <div class="route">
-                  <span class="dist">~22K</span>
-                  <span class="body"><span class="rname">Burnaby Mountain fire roads</span>
-                  <span class="rnote">6.5 km out, a hilly 9–10 km loop around the park, 6.5 km back. Real climbing.</span></span>
-                </div>
-                <div class="route">
-                  <span class="dist">~33K</span>
-                  <span class="body"><span class="rname">Seymour Demonstration Forest</span>
-                  <span class="rnote">4.7 km to the Lower Seymour gate, then ~24 km of paved forest road out toward the dam and back — closed to cars.</span></span>
-                </div>
-                <div class="route">
-                  <span class="dist">~40K</span>
-                  <span class="body"><span class="rname">Deep Cove</span>
-                  <span class="rnote">Out over the Ironworkers Memorial Bridge bike path — wide and separated from traffic — then Dollarton Hwy and Mount Seymour Parkway into the village. Real elevation, real payoff view.</span></span>
-                </div>
-                <div class="route">
-                  <span class="dist">~60K</span>
-                  <span class="body"><span class="rname">Belcarra Regional Park</span>
-                  <span class="rnote">North Road and Barnet Hwy through Burnaby, along Port Moody's waterfront at Rocky Point, into Belcarra. Flatter than Deep Cove, an all-morning ride.</span></span>
-                </div>
-                <div class="route">
-                  <span class="dist">~100K</span>
-                  <span class="body"><span class="rname">Fort Langley century day</span>
-                  <span class="rnote">Central Valley Greenway through Burnaby, onto the Traboulay PoCo Trail, out to Fort Langley and Derby Reach and back. The top of the ladder — save it for when you want to test it.</span></span>
-                </div>
+                <details class="route">
+                  <summary>
+                    <span class="dist">~18K</span>
+                    <span class="body">
+                      <span class="rname">Trans Canada Trail, short</span>
+                      <span class="rnote">1.3 km to the entrance, a shorter stretch of trail, turn around. The easy day.</span>
+                      <span class="maplink"><svg class="ico"><use href="#i-chevron"/></svg>Map</span>
+                    </span>
+                  </summary>
+                  <div class="mappanel"
+                       data-place="Trans Canada Trail, Burnaby, BC"
+                       data-mode="bicycling"></div>
+                </details>
+                <details class="route">
+                  <summary>
+                    <span class="dist">~22K</span>
+                    <span class="body">
+                      <span class="rname">Burnaby Mountain fire roads</span>
+                      <span class="rnote">6.5 km out, a hilly 9–10 km loop around the park, 6.5 km back. Real climbing.</span>
+                      <span class="maplink"><svg class="ico"><use href="#i-chevron"/></svg>Map</span>
+                    </span>
+                  </summary>
+                  <div class="mappanel"
+                       data-place="Burnaby Mountain Conservation Area, Burnaby, BC"
+                       data-mode="bicycling"></div>
+                </details>
+                <details class="route">
+                  <summary>
+                    <span class="dist">~33K</span>
+                    <span class="body">
+                      <span class="rname">Seymour Demonstration Forest</span>
+                      <span class="rnote">4.7 km to the Lower Seymour gate, then ~24 km of paved forest road out toward the dam and back — closed to cars.</span>
+                      <span class="maplink"><svg class="ico"><use href="#i-chevron"/></svg>Map</span>
+                    </span>
+                  </summary>
+                  <div class="mappanel"
+                       data-place="Lower Seymour Conservation Reserve, North Vancouver, BC"
+                       data-mode="bicycling"></div>
+                </details>
+                <details class="route">
+                  <summary>
+                    <span class="dist">~40K</span>
+                    <span class="body">
+                      <span class="rname">Deep Cove</span>
+                      <span class="rnote">Out over the Ironworkers Memorial Bridge bike path — wide and separated from traffic — then Dollarton Hwy and Mount Seymour Parkway into the village. Real elevation, real payoff view.</span>
+                      <span class="maplink"><svg class="ico"><use href="#i-chevron"/></svg>Map</span>
+                    </span>
+                  </summary>
+                  <div class="mappanel"
+                       data-place="Deep Cove, North Vancouver, BC"
+                       data-mode="bicycling"
+                       data-via="Ironworkers Memorial Second Narrows Crossing, Vancouver, BC"></div>
+                </details>
+                <details class="route">
+                  <summary>
+                    <span class="dist">~60K</span>
+                    <span class="body">
+                      <span class="rname">Belcarra Regional Park</span>
+                      <span class="rnote">North Road and Barnet Hwy through Burnaby, along Port Moody's waterfront at Rocky Point, into Belcarra. Flatter than Deep Cove, an all-morning ride.</span>
+                      <span class="maplink"><svg class="ico"><use href="#i-chevron"/></svg>Map</span>
+                    </span>
+                  </summary>
+                  <div class="mappanel"
+                       data-place="Belcarra Regional Park, Belcarra, BC"
+                       data-mode="bicycling"
+                       data-via="Rocky Point Park, Port Moody, BC"></div>
+                </details>
+                <details class="route">
+                  <summary>
+                    <span class="dist">~100K</span>
+                    <span class="body">
+                      <span class="rname">Fort Langley century day</span>
+                      <span class="rnote">Central Valley Greenway through Burnaby, onto the Traboulay PoCo Trail, out to Fort Langley and Derby Reach and back. The top of the ladder — save it for when you want to test it.</span>
+                      <span class="maplink"><svg class="ico"><use href="#i-chevron"/></svg>Map</span>
+                    </span>
+                  </summary>
+                  <div class="mappanel"
+                       data-place="Fort Langley, BC"
+                       data-mode="bicycling"
+                       data-via="Traboulay PoCo Trail, Port Coquitlam, BC"></div>
+                </details>
                 <div class="footnote">Exact turns vary day to day. <b>Check the route in a mapping app before heading out</b>, especially on the longer ones.</div>
               </div>
 
@@ -1620,6 +1740,90 @@
     state = { days:{}, milestones:{}, reflection:{easy:"", hard:"", keep:""} };
     save(); syncReflection(); renderAll();
     toast("All data erased.");
+  });
+
+  /* ---------- route maps ----------
+     Maps are looked up by place name rather than by coordinates baked in here,
+     and turn-by-turn is handed to Google or Apple rather than drawn by this
+     app — so what you get is their current routing, not a traced line. Each
+     panel is built the first time it opens, so closed routes cost nothing. */
+  var MAP_ORIGIN = "Cassiar Connector, Vancouver, BC";
+
+  function buildMap(panel){
+    if (!panel || panel.getAttribute("data-built")) return;
+    panel.setAttribute("data-built", "1");
+
+    var place = panel.getAttribute("data-place");
+    var mode = panel.getAttribute("data-mode") || "bicycling";
+    var via = panel.getAttribute("data-via");
+
+    var wrap = document.createElement("div");
+    wrap.className = "mapwrap";
+
+    /* Sits behind the frame, so losing the map offline leaves a real message
+       instead of a broken grey box. The buttons below still work. */
+    var fallback = document.createElement("div");
+    fallback.className = "mapfallback";
+    fallback.innerHTML = icon("pin") + "<span>Map needs a connection.<br>The directions buttons still work.</span>";
+    wrap.appendChild(fallback);
+
+    var src = "https://maps.google.com/maps?q=" + encodeURIComponent(place) + "&z=12&output=embed";
+
+    function mountFrame(){
+      var frame = document.createElement("iframe");
+      frame.className = "mapframe";
+      frame.loading = "lazy";
+      frame.referrerPolicy = "no-referrer-when-downgrade";
+      frame.setAttribute("allowfullscreen", "");
+      frame.title = "Map of " + place;
+      frame.addEventListener("load", function(){ frame.classList.add("ready"); });
+      frame.src = src;
+      wrap.appendChild(frame);
+    }
+
+    /* An iframe fires load even for its own network-error page, so it can't
+       tell us whether the map arrived. An opaque no-cors request can: it
+       rejects when the host is unreachable. Probe first, and leave the
+       fallback in place if it fails. */
+    if (typeof fetch === "function"){
+      fetch(src, { mode: "no-cors" }).then(mountFrame, function(){});
+    } else {
+      mountFrame();
+    }
+
+    panel.appendChild(wrap);
+
+    var dir = "https://www.google.com/maps/dir/?api=1" +
+      "&origin=" + encodeURIComponent(MAP_ORIGIN) +
+      "&destination=" + encodeURIComponent(place) +
+      "&travelmode=" + mode;
+    if (via) dir += "&waypoints=" + encodeURIComponent(via);
+
+    var apple = "https://maps.apple.com/?saddr=" + encodeURIComponent(MAP_ORIGIN) +
+      "&daddr=" + encodeURIComponent(place) +
+      "&dirflg=" + (mode === "walking" ? "w" : "b");
+
+    var btns = document.createElement("div");
+    btns.className = "mapbtns";
+    btns.innerHTML =
+      '<a class="btn primary small" target="_blank" rel="noopener" href="' + dir + '">' +
+        icon("pin") + 'Directions in Google Maps</a>' +
+      '<a class="btn ghost small" target="_blank" rel="noopener" href="' + apple + '">' +
+        icon("pin") + 'Apple Maps</a>';
+    panel.appendChild(btns);
+
+    var note = document.createElement("p");
+    note.className = "mapnote";
+    note.innerHTML = "This shows <b>" + esc(place.split(",")[0]) + "</b> rather than a traced line. " +
+      (via ? "Directions route via <b>" + esc(via.split(",")[0]) + "</b> and hand off" : "The buttons hand off") +
+      " to your maps app for the actual turns.";
+    panel.appendChild(note);
+  }
+
+  Array.prototype.forEach.call(document.querySelectorAll("details.route"), function(d){
+    d.addEventListener("toggle", function(){
+      if (d.open) buildMap(d.querySelector(".mappanel"));
+    });
   });
 
   /* ---------- tabs ---------- */
