@@ -7,7 +7,7 @@ A self-contained web app for tracking a 20-day lifestyle challenge running **Aug
 ## What it does
 
 - **Today** — the seven daily habits (9 hours sleep, exercise, 15,000+ steps, eat clean, screen limits, reading, journaling) plus cold showers on the three days a week they belong. Each day also shows a schedule shaped to that day's training type, and names the specific session or routes.
-- **Workout** — the two lift-day sessions with sets, reps and form cues, the weight guide, and the bike and run routes with door-to-door distances.
+- **Workout** — the two lift-day sessions with sets, reps and form cues, the weight guide, and two route ladders ordered by distance: runs from ~5K to ~10K, rides from ~18K to a ~100K century day. All distances are door-to-door.
 - **Progress** — streak, full-day count, a 20-day heatmap, per-habit completion rates, the Day 1 / 8 / 15 measurement and photo check-ins, and the closing reflection questions.
 - **Guide** — daily schedule, the 7-day training cycle, nutrition timing, sleep protocol, skincare routine, starting budget, and breakfast ideas.
 

@@ -397,6 +397,27 @@
   .cardio-card li::before{content:""; position:absolute; left:0; top:6px; width:4.5px; height:4.5px; border-radius:50%; background:var(--muted);}
   .cardio-card li b{color:var(--ink);}
 
+  /* Route ladders — ordered by distance, so the rung label leads each row. */
+  .route{display:flex; gap:11px; padding:8px 0; border-bottom:1px solid var(--hair);}
+  .route:first-of-type{padding-top:2px;}
+  .route:last-child{border-bottom:none; padding-bottom:2px;}
+  .route .dist{
+    flex:none; min-width:54px; font-size:12px; font-weight:900;
+    font-variant-numeric:tabular-nums; letter-spacing:-0.02em; padding-top:1px;
+  }
+  .cardio-card.run .route .dist{color:var(--cardio2);}
+  .cardio-card.bike .route .dist{color:var(--cardio1);}
+  .route .body{flex:1; min-width:0; display:block;}
+  .route .rname{display:block; font-size:12px; font-weight:800; line-height:1.3;}
+  .route .rnote{display:block; font-size:11px; font-weight:600; color:var(--muted); margin-top:3px; line-height:1.4;}
+  .footnote{
+    margin-top:10px; padding-top:10px; border-top:1px solid var(--hair);
+    font-size:10.5px; font-weight:600; color:var(--muted); line-height:1.45;
+  }
+  /* The route above already draws a rule, so don't stack a second one. */
+  .route + .footnote{border-top:none; padding-top:0;}
+  .footnote b{color:var(--ink);}
+
   /* ============ guide ============ */
   details.gsec{background:var(--card); border-radius:18px; box-shadow:var(--shadow); margin-bottom:12px; overflow:hidden;}
   details.gsec summary{list-style:none; padding:14px 16px; display:flex; align-items:center; gap:11px; font-weight:800; font-size:13.5px;}
@@ -737,24 +758,68 @@
 
             <div class="card">
               <h3>Cardio Routes <span class="tag cardio">Days 2 · 3 · 6</span></h3>
-              <div class="note">All routes start and end at <b>home</b> — distances below are door-to-door.</div>
-              <div class="cardio-card">
-                <h4><svg class="ico bike"><use href="#i-bike"/></svg>Bike — 20+ km</h4>
-                <ul>
-                  <li><b>Trans Canada Trail</b> out-and-back — ~26-27 km — flat, the easy day (Day 2)</li>
-                  <li><b>Burnaby Mountain</b> fire roads — ~22-23 km — real climbing</li>
-                  <li><b>Seymour Demonstration Forest</b> — ~33 km — the biggest day</li>
-                </ul>
+              <div class="note">Every distance below is door-to-door from <b>home</b>, which sits right by the Cassiar Connector — New Brighton Park (~1 km), the Trans Canada Trail entrance (~1.3 km) and the Cassiar Bikeway all connect within the first couple of km.</div>
+
+              <div class="cardio-card run">
+                <h4><svg class="ico run"><use href="#i-run"/></svg>Run — the 5K to 10K ladder</h4>
+                <div class="route">
+                  <span class="dist">~5K</span>
+                  <span class="body"><span class="rname">Trans Canada Trail out-and-back</span>
+                  <span class="rnote">1.3 km to the entrance, 1.2 km in, turn around. Flat and shaded — the easiest rung.</span></span>
+                </div>
+                <div class="route">
+                  <span class="dist">~6K</span>
+                  <span class="body"><span class="rname">Empire Fields track</span>
+                  <span class="rnote">0.3 km away, 580m per lap. Adjust the lap count to land anywhere in range, or run 8×400m repeats.</span></span>
+                </div>
+                <div class="route">
+                  <span class="dist">~8K</span>
+                  <span class="body"><span class="rname">New Brighton Park loop</span>
+                  <span class="rnote">1 km out on the Cassiar Bikeway, the New Brighton and Hastings Park loop (~5 km of waterfront, salt marsh and PNE gardens), 1 km home.</span></span>
+                </div>
+                <div class="route">
+                  <span class="dist">~10K</span>
+                  <span class="body"><span class="rname">New Brighton + Hastings Park Sanctuary</span>
+                  <span class="rnote">The same loop, continuing along the Hastings Park perimeter and Sanctuary paths before turning back. More scenery, still door-to-door.</span></span>
+                </div>
+                <div class="footnote">The <b>Velodrome Trail</b> stairs and <b>Burnaby Lake</b> are both 6.5–8+ km away just to reach — an occasional special trip, not part of this rotation.</div>
               </div>
-              <div class="cardio-card">
-                <h4><svg class="ico run"><use href="#i-run"/></svg>Run — 5+ km</h4>
-                <ul>
-                  <li><b>Trans Canada Trail</b> out-and-back — ~5 km, starts at your door</li>
-                  <li><b>Empire Fields track</b> — ~0.3 km away, 580m laps or 8×400m repeats</li>
-                  <li><b>Velodrome Trail</b> stairs — ~6.5 km each way, save for a Day 6</li>
-                  <li><b>Burnaby Lake</b> loop — ~8.3 km each way, save for a Day 6</li>
-                </ul>
+
+              <div class="cardio-card bike">
+                <h4><svg class="ico bike"><use href="#i-bike"/></svg>Bike — the 15K to 100K ladder</h4>
+                <div class="route">
+                  <span class="dist">~18K</span>
+                  <span class="body"><span class="rname">Trans Canada Trail, short</span>
+                  <span class="rnote">1.3 km to the entrance, a shorter stretch of trail, turn around. The easy day.</span></span>
+                </div>
+                <div class="route">
+                  <span class="dist">~22K</span>
+                  <span class="body"><span class="rname">Burnaby Mountain fire roads</span>
+                  <span class="rnote">6.5 km out, a hilly 9–10 km loop around the park, 6.5 km back. Real climbing.</span></span>
+                </div>
+                <div class="route">
+                  <span class="dist">~33K</span>
+                  <span class="body"><span class="rname">Seymour Demonstration Forest</span>
+                  <span class="rnote">4.7 km to the Lower Seymour gate, then ~24 km of paved forest road out toward the dam and back — closed to cars.</span></span>
+                </div>
+                <div class="route">
+                  <span class="dist">~40K</span>
+                  <span class="body"><span class="rname">Deep Cove</span>
+                  <span class="rnote">Out over the Ironworkers Memorial Bridge bike path — wide and separated from traffic — then Dollarton Hwy and Mount Seymour Parkway into the village. Real elevation, real payoff view.</span></span>
+                </div>
+                <div class="route">
+                  <span class="dist">~60K</span>
+                  <span class="body"><span class="rname">Belcarra Regional Park</span>
+                  <span class="rnote">North Road and Barnet Hwy through Burnaby, along Port Moody's waterfront at Rocky Point, into Belcarra. Flatter than Deep Cove, an all-morning ride.</span></span>
+                </div>
+                <div class="route">
+                  <span class="dist">~100K</span>
+                  <span class="body"><span class="rname">Fort Langley century day</span>
+                  <span class="rnote">Central Valley Greenway through Burnaby, onto the Traboulay PoCo Trail, out to Fort Langley and Derby Reach and back. The top of the ladder — save it for when you want to test it.</span></span>
+                </div>
+                <div class="footnote">Exact turns vary day to day. <b>Check the route in a mapping app before heading out</b>, especially on the longer ones.</div>
               </div>
+
               <div class="note">Day 3 adds light upper-body work after the run — a few easy sets, nothing heavy. Legs already did the work.</div>
             </div>
           </div>
@@ -957,8 +1022,8 @@
 
   var DAY_TYPES = {
     1:{type:"lift",  tag:"Lift",  title:"Lift Day A",             focus:"Heavy full-body lift — weights, calisthenics, box jumps."},
-    2:{type:"cardio",tag:"Cardio",title:"Easy / Moderate Bike",   focus:"20+ km at recovery pace. Blood flow, not a hard push."},
-    3:{type:"cardio",tag:"Cardio",title:"Trail Run + Upper Body", focus:"5+ km run, then light upper-body and core accessory work."},
+    2:{type:"cardio",tag:"Cardio",title:"Easy / Moderate Bike",   focus:"A low rung of the bike ladder at recovery pace. Blood flow, not a hard push."},
+    3:{type:"cardio",tag:"Cardio",title:"Trail Run + Upper Body", focus:"A run from the 5K–10K ladder, then light upper-body and core accessory work."},
     4:{type:"rest",  tag:"Rest",  title:"Rest / Active Recovery", focus:"Walk, stretch, easy stairs. Full recovery before lift #2."},
     5:{type:"lift",  tag:"Lift",  title:"Lift Day B",             focus:"Heavy full-body lift #2 — progress the weight or reps from Day 1."},
     6:{type:"cardio",tag:"Cardio",title:"Long Cardio Day",        focus:"The week's biggest push — your longest bike or run."},
@@ -1060,9 +1125,9 @@
       out.push({t:"After training", s:660, e:720, d:"Warm shower and a real face cleanse. <b>No cold shower today</b> — it would blunt the muscle-building signal. Protein and carbs within the hour."});
       throughStart = 720;
     } else if (info.type === "cardio"){
-      var what = p === 2 ? "Easy bike, 20+ km at recovery pace"
-               : p === 3 ? "Trail run 5+ km, then light upper-body work"
-               : "Your longest ride or run of the week";
+      var what = p === 2 ? "Easy bike at recovery pace — the ~18K or ~22K rung"
+               : p === 3 ? "A run off the 5K–10K ladder, then light upper-body work"
+               : "The longest ride or run of your week";
       out.push({t:"7:30 – 9:00 AM", s:450, e:540, hi:true, d:"<b>" + what + ".</b> Routes are on the Workout tab."});
       out.push({t:"After training", s:540, e:600, d:(coldShowerDay(n) ? "Cold shower while still warm from the session, plus a real face cleanse." : "Normal warm shower and face cleanse.") + " Protein and carbs within the hour."});
       throughStart = 600;
@@ -1307,10 +1372,10 @@
     } else if (info.type === "cardio"){
       sess.innerHTML = '<h3>Route Options <span class="tag cardio">Session</span></h3>' +
         '<div class="note">' + (cyclePos(selectedDay) === 2
-          ? "Trans Canada Trail out-and-back is the flat one, ~26–27 km door to door. Recovery pace, not a push."
+          ? "The short Trans Canada Trail out-and-back (~18K) or Burnaby Mountain (~22K). Recovery pace, not a push."
           : cyclePos(selectedDay) === 3
-          ? "Trans Canada Trail (~5 km from your door) or laps at Empire Fields, 0.3 km away. Light upper-body work after."
-          : "Seymour Demonstration Forest (~33 km), Burnaby Mountain fire roads, or the full Burnaby Lake loop if you'd rather run long.") +
+          ? "Trans Canada Trail (~5K), laps at Empire Fields (~6K), or the New Brighton Park loop (~8K). Light upper-body work after."
+          : "Climb a rung — Seymour Demonstration Forest (~33K), Deep Cove (~40K) or Belcarra (~60K). Or run the ~10K New Brighton and Hastings Park loop instead.") +
         '</div><div class="note" style="margin-top:8px;">Full distances and notes are on the Workout tab.</div>';
     } else {
       sess.innerHTML = '<h3>Recovery <span class="tag rest">No session</span></h3>' +
